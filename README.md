@@ -1,4 +1,4 @@
-# Comparative Analysis of Diffusion Models for Audio Denoising
+# MIDI-Conditioned Diffusion Models for Drum Audio Enhancement
 
 This repository contains the research page for our study on the efficacy of diffusion models for audio denoising, comparing a baseline diffusion model with an enhanced model incorporating Connectionist Temporal Classification (CTC) loss.
 
@@ -8,7 +8,7 @@ Visit the live research page: [https://eladaspis.github.io/paper_page](https://e
 
 ## 📋 Abstract
 
-This study investigates the efficacy of diffusion models for audio denoising. We present a comparative analysis between a baseline diffusion model and an enhanced model incorporating a Connectionist Temporal Classification (CTC) loss function. The objective is to evaluate the impact of CTC loss on model performance at various stages of training.
+This study presents a novel approach to drum audio enhancement using MIDI-conditioned diffusion models. We leverage symbolic musical information from MIDI data to guide the denoising process, enabling the model to make musically informed decisions about which audio components to preserve, enhance, or suppress. The conditioning mechanism uses Feature-wise Linear Modulation (FiLM) to incorporate MIDI embeddings throughout the diffusion U-Net architecture.
 
 ## ✨ Features
 
@@ -76,7 +76,7 @@ If you use this work in your research, please cite:
 
 ```bibtex
 @misc{aspis2025diffusion,
-  title={Comparative Analysis of Diffusion Models for Audio Denoising},
+  title={MIDI-Conditioned Diffusion Models for Drum Audio Enhancement},
   author={Elad Aspis},
   year={2025},
   institution={Bar Ilan University},

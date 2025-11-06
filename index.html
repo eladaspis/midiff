@@ -5,18 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
   <!-- Replace the content tag with appropriate information -->
-  <meta name="description" content="Comparative Analysis of Diffusion Models for Audio Denoising">
-  <meta property="og:title" content="Comparative Analysis of Diffusion Models for Audio Denoising"/>
-  <meta property="og:description" content="Comparative Analysis of Diffusion Models for Audio Denoising"/>
-  <meta property="og:url" content="https://benadar293.github.io/midipm"/>
+  <meta name="description" content="MIDI-Conditioned Diffusion Models for Drum Audio Enhancement">
+  <meta property="og:title" content="MIDI-Conditioned Diffusion Models for Drum Audio Enhancement"/>
+  <meta property="og:description" content="MIDI-Conditioned Diffusion Models for Drum Audio Enhancement"/>
   <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
   <meta property="og:image" content="static/images/overview.PNG" />
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
 
 
-  <meta name="twitter:title" content="Comparative Analysis of Diffusion Models for Audio Denoising">
-  <meta name="twitter:description" content="Comparative Analysis of Diffusion Models for Audio Denoising">
+  <meta name="twitter:title" content="MIDI-Conditioned Diffusion Models for Drum Audio Enhancement">
+  <meta name="twitter:description" content="MIDI-Conditioned Diffusion Models for Drum Audio Enhancement">
   <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
   <meta name="twitter:image" content="static/images/overview.PNG">
   <meta name="twitter:card" content="summary_large_image">
@@ -25,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-  <title>Comparative Analysis of Diffusion Models for Audio Denoising</title>
+  <title>MIDI-Conditioned Diffusion Models for Drum Audio Enhancement</title>
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
   rel="stylesheet">
@@ -48,6 +47,37 @@
   <script src="https://unpkg.com/seewav@1.0.0/dist/seewav.min.js"></script>
   <!-- Chart.js for interactive graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- MIDI Player -->
+  <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+  <!-- MathJax Configuration -->
+  <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+  </script>
+  <!-- MathJax Library -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- MIDI parsing library -->
+  <script src="https://cdn.jsdelivr.net/npm/midi-parser-js@4.0.4/dist/midi-parser.min.js"></script>
+  <!-- Backup MIDI parser -->
+  <script src="https://unpkg.com/midi-file@1.2.4/midi-file.js"></script>
+  <!-- Tone.js for audio synthesis -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.58/Tone.js"></script>
+  <!-- TensorFlow.js for Magenta -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/1.2.8/tf.min.js"></script>
+  <!-- Magenta.js core for Player -->
+  <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.9.0"></script>
+  <!-- D3.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@5.7.0/dist/d3.min.js"></script>
   <!-- Web Audio API FFT implementation -->
 
 </head>
@@ -57,13 +87,14 @@
   <section class="hero">
     <div class="hero-body">
       <div class="container is-max-desktop">
-        <div class="columns is-centered">
+        <div class="columns">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">Comparative Analysis of Diffusion Models for Audio Denoising</h1>
+            <h1 class="title is-1 publication-title">MIDI-Conditioned Diffusion Models for Drum Audio Enhancement</h1>
             <div class="is-size-5 publication-authors">
               <!-- Paper authors -->
               <span class="author-block">
-                <a href="#" target="_blank">Elad Aspis</a><sup>1</sup></span>
+                <a href="#" target="_blank">Elad Aspis</a><sup>1</sup></span>,
+                <span class="author-block"><a href="#" target="_blank">Sharon Gannot</a><sup>1</sup></span>
                   </div>
 
                   <div class="is-size-5 publication-authors">
@@ -105,6 +136,17 @@
                     <span>Code</span>
                   </a>
                 </span>
+
+                  <!-- Demo link -->
+                  <span class="link-block">
+                    <a href="demo.html"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-play-circle"></i>
+                    </span>
+                    <span>Demo</span>
+                  </a>
+                </span>
             </div>
           </div>
         </div>
@@ -113,140 +155,609 @@
   </div>
 </section>
 
-<!-- <section class="section"> -->
-  <!-- <div class="container is-widescreen"> -->
+<section class="section">
+  <div class="container is-widescreen">
 
     <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
-	  <p>
-        This study investigates the efficacy of diffusion models for audio denoising. We present a comparative analysis between a baseline diffusion model and an enhanced model incorporating a Connectionist Temporal Classification (CTC) loss function. The objective is to evaluate the impact of CTC loss on model performance at various stages of training. Audio samples and quantitative metrics are provided to demonstrate the perceptual and statistical quality of the denoised outputs from both models.
-	  </p>
+          <p>
+            We present MIDI-conditioned diffusion models for drum audio enhancement that leverage symbolic musical information to guide the denoising process. Our method extends SGMSE by incorporating MIDI conditioning through Feature-wise Linear Modulation (FiLM) layers within the NCSNPP U-Net architecture. The MIDI encoder processes piano roll representations to generate conditioning signals that modulate the diffusion model's behavior, enabling musically-informed enhancement decisions. Evaluation on drum audio datasets with (clean, noisy, MIDI) triplets demonstrates improved Frechet VGGish Scores and superior perceptual quality with better preservation of rhythmic structure compared to baseline models.
+          </p>
         </div>
       </div>
     </div>
 
-</section>
-    <br>
-    <!-- End image carousel -->
-
-<section class="section">
-  <div class="container is-widescreen">
-    <h2 class="title is-3">Quantitative Results</h2>
-    <p>To quantitatively evaluate performance, we calculated standard audio quality metrics. The Frechet VGGish Score measures the similarity between distributions of embeddings from the generated audio and the ground truth clean audio. <strong>A lower score indicates higher similarity to the clean audio.</strong></p>
-    <br>
-    <div class="columns is-centered">
+    <!-- Architecture Section with Text and Figures -->
+    <div class="columns is-centered" style="margin-top: 3rem;">
       <div class="column is-four-fifths">
-        <figure>
+        <!-- First Row: Text on Left, MIDI Encoder on Right -->
+        <div class="columns is-centered">
+          <div class="column is-6">
+            <div class="content has-text-justified">
+              <h3 class="title is-4">MIDI-Conditioned Architecture</h3>
+              <p>
+                Our approach builds upon SGMSE (Score-based Generative Models for Speech Enhancement) as the baseline framework, extending it with MIDI conditioning for drum audio enhancement. We utilize the MIDI information as a conditioning signal within the NCSNPP (Noise Conditional Score Network++) U-Net architecture, enabling the model to leverage symbolic musical context during the enhancement process.
+              </p>
+              <p>
+                The core architectural modification involves integrating MIDI conditioning into the NCSNPP residual blocks. Specifically, we add an additional FiLM (Feature-wise Linear Modulation) layer to each residual block, enabling the network to dynamically modulate its behavior based on the MIDI input. The MIDI conditioning is processed through a custom encoder that takes MIDI roll representations and transforms them into continuous embeddings \(\mathbf{h}_{\text{MIDI}} \in \mathbb{R}^d\).
+              </p>
+              <p>
+                The MIDI encoder processes piano roll representations of the drum patterns, capturing note onsets and velocities. This encoder architecture consists of convolutional layers followed by temporal processing stages that extract both local rhythmic patterns and global musical structure. The resulting MIDI embeddings are then used to generate FiLM parameters (\(\gamma\) and \(\beta\)) that modulate the U-Net features at multiple scales, allowing the diffusion model to align audio enhancement with the underlying musical intent and drum performance characteristics.
+              </p>
+            </div>
+          </div>
+          <div class="column is-1">
+          </div>
+          <div class="column is-4" style="margin-top: 4rem;">
+            <figure>
+              <img src="static/figures/MidiConditionEncoder.excalidraw.png" alt="Residual Block with MIDI Conditioning via FiLM Layers" style="width: 100%;">
+              <figcaption class=""">
+                <strong>Figure 1:</strong> Residual Block with MIDI Conditioning via FiLM Layers
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+        
+        <!-- Second Row: FiLM Implementation Below -->
+        <div class="columns is-centered" style="margin-top: 3rem;">
+          <div class="column is-6">
+            <div class="content has-text-justified">
+              <h3 class="title is-4">Feature-wise Linear Modulation (FiLM)</h3>
+              <p>
+                FiLM is a powerful conditioning mechanism that modulates the activations of a neural network through feature-wise affine transformations. Given input features \(\mathbf{x}\) and conditioning information (in our case, MIDI embeddings), FiLM applies element-wise scaling and shifting operations:
+              </p>
+              <p style="text-align: center; background: #f8f9fa; border-left: 4px solid #007bff; padding: 1.5rem; margin: 2rem 0; font-size: 1.15rem;">
+                \[\text{FiLM}(\mathbf{x} \mid \gamma, \beta) = \gamma \odot \mathbf{x} + \beta\]
+              </p>
+              <p>
+                where \(\gamma\) and \(\beta\) are learned modulation parameters derived from the MIDI conditioning signal through neural network layers. The scale parameter \(\gamma\) controls the magnitude of features, while the shift parameter \(\beta\) provides an additive bias. This adaptive modulation allows the diffusion model to dynamically adjust its behavior based on the MIDI input.
+              </p>
+              <p>
+                In our architecture, the FiLM parameters are generated from the MIDI encoder output:
+              </p>
+              <p style="text-align: center; background: #f8f9fa; border-left: 4px solid #28a745; padding: 1.5rem; margin: 2rem 0; font-size: 1.15rem;">
+                \[\gamma = f_{\gamma}(\mathbf{h}_{\text{MIDI}}), \quad \beta = f_{\beta}(\mathbf{h}_{\text{MIDI}})\]
+              </p>
+              <p>
+                where \(\mathbf{h}_{\text{MIDI}}\) represents the encoded MIDI features, and \(f_{\gamma}\), \(f_{\beta}\) are learned projection functions. This conditioning mechanism is applied at multiple layers throughout the diffusion U-Net, enabling the network to incorporate MIDI information effectively throughout the denoising process.
+              </p>
+            </div>
+          </div>
+          <div class="column is-2">
+          </div>
+
+          <div class="column is-3" style="margin-top: 5rem;">
+            <figure>
+              <img src="static/figures/FiLM_implementation.png" alt="FiLM Implementation" style="width: 100%;">
+              <figcaption>
+                <strong>Figure 2:</strong> Feature-wise Linear Modulation (FiLM) Implementation
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dataset Section -->
+    <div class="columns is-centered" style="margin-top: 3rem;">
+      <div class="column is-four-fifths">
+        <h3 class="title is-3">Dataset</h3>
+        <div class="content has-text-justified">
+          <p>
+            Our training dataset consists of triplets containing (clean, noisy, MIDI) samples for drum audio enhancement. The clean audio serves as ground truth, noisy versions simulate realistic degradation scenarios, and MIDI data provides symbolic musical context including note onsets, velocities, and timing information.
+          </p>
+          <p>
+            This multimodal structure enables the model to learn relationships between symbolic musical information and audio quality, allowing for musically-informed enhancement decisions. The MIDI component serves as a strong conditioning signal, providing explicit knowledge about drum patterns and timing for the enhancement process.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="columns is-centered" style="margin-top: 3rem;">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Results</h2>
+        <div class="content">
+          <p>To quantitatively evaluate performance, we calculated standard audio quality metrics. The Frechet VGGish Score measures the similarity between distributions of embeddings from the generated audio and the ground truth clean audio. <strong>A lower score indicates higher similarity to the clean audio.</strong></p>
+        </div>
+        
+        <figure style="margin-top: 2rem;">
           <div style="width: 100%; height: 400px; margin: 20px 0;">
             <canvas id="frechetChart"></canvas>
           </div>
-          <figcaption>Figure 1: Interactive Frechet VGGish Score for Baseline vs. CTC Loss models. The CTC Loss model shows a consistently lower (better) score throughout the training process. Hover over points to see exact values.</figcaption>
+          <figcaption>Figure 3: Interactive Frechet VGGish Score for Baseline vs. CTC Loss models. The CTC Loss model shows a consistently lower (better) score throughout the training process. Hover over points to see exact values.</figcaption>
         </figure>
       </div>
     </div>
-    <br>
 
-    <br><br>
+    <h2 class="title is-3" style="margin-top: 3rem;">Audio Samples</h2>
+    <div class="content">
+      <p>The following samples provide a direct perceptual comparison. The "Clean Original" and "Noisy Input" are provided as references.</p>
+    </div>
 
-    <h2 class="title is-3">Audio Samples</h2>
-    <p>The following samples provide a direct perceptual comparison. The "Clean Original" and "Noisy Input" are provided as references.</p>
-    <br>
-
-    <h3 class="title is-4">Reference Audio</h3>
-    <div class="columns is-centered">
-      <div class="column">
-          <div class="content has-text-centered">
-            <p><strong>Clean Original</strong></p>
-            <div id="waveform-clean" style="margin-bottom: 10px;"></div>
-            <canvas id="spectrogram-clean" style="width: 800px; height: 250px; max-width: 100%; margin-bottom: 10px; border: 1px solid #333; border-radius: 4px;"></canvas>
-            <audio id="audio-clean" controls>
-              <source src="static/clean_10_soul-groove10_102_4-4_bluebird.wav" type="audio/wav">
-              Your browser does not support the audio element.
-            </audio>
+    <h3 class="title is-4">Audio Reference Samples</h3>
+    
+    <!-- Clean, Noisy, and MIDI Reference in One Line -->
+    <div class="columns is-centered" style="margin-bottom: 30px;">
+      <!-- Clean Audio Reference -->
+      <div class="column is-4">
+        <div class="box" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border: 2px solid #dee2e6; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+          <div class="level is-mobile" style="margin-bottom: 15px;">
+            <div class="level-left">
+              <div class="level-item">
+                <h4 class="title is-6" style="color: #2c3e50; margin-bottom: 0;">
+                  <span class="icon" style="color: #27ae60;">
+                    <i class="fas fa-music"></i>
+                  </span>
+                  Clean Reference Audio
+                </h4>
+              </div>
+            </div>
           </div>
+          
+          <!-- Compact Spectrogram visualization -->
+          <div style="margin-bottom: 15px; display: flex; justify-content: center;">
+            <img src="static/images/spec_clean.png" alt="Clean Audio Spectrogram" style="width: auto; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="field">
+            <div class="control">
+              <audio id="audio-clean" controls style="width: 100%; height: 40px;">
+                <source src="static/clean_10_soul-groove10_102_4-4_bluebird.wav" type="audio/wav">
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="column">
-          <div class="content has-text-centered">
-            <p><strong>Noisy Input</strong></p>
-            <div id="waveform-noisy" style="margin-bottom: 10px;"></div>
-            <canvas id="spectrogram-noisy" style="width: 800px; height: 250px; max-width: 100%; margin-bottom: 10px; border: 1px solid #333; border-radius: 4px;"></canvas>
-            <audio id="audio-noisy" controls>
-              <source src="static/noisy_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-              Your browser does not support the audio element.
-            </audio>
+      <!-- Noisy Audio Reference -->
+      <div class="column is-4">
+        <div class="box" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border: 2px solid #ffc107; border-radius: 12px; box-shadow: 0 8px 25px rgba(255,193,7,0.2);">
+          <div class="level is-mobile" style="margin-bottom: 15px;">
+            <div class="level-left">
+              <div class="level-item">
+                <h4 class="title is-6" style="color: #856404; margin-bottom: 0;">
+                  <span class="icon" style="color: #f39c12;">
+                    <i class="fas fa-music"></i>
+                  </span>
+                  Noisy Input Audio
+                </h4>
+              </div>
+            </div>
           </div>
+          
+          <!-- Compact Spectrogram visualization -->
+          <div style="margin-bottom: 15px; display: flex; justify-content: center;">
+            <img src="static/images/spec_noisy.png" alt="Noisy Audio Spectrogram" style="width: auto; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="field">
+            <div class="control">
+              <audio id="audio-noisy" controls style="width: 100%; height: 40px;">
+                <source src="static/noisy_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDI Input File -->
+      <div class="column is-4">
+        <div class="box" style="background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%); border: 2px solid #28a745; border-radius: 12px; box-shadow: 0 8px 25px rgba(40,167,69,0.2);">
+          <div class="level is-mobile" style="margin-bottom: 15px;">
+            <div class="level-left">
+              <div class="level-item">
+                <h4 class="title is-6" style="color: #155724; margin-bottom: 0;">
+                  <span class="icon" style="color: #28a745;">
+                    <i class="fas fa-file-audio"></i>
+                  </span>
+                  Condition - MIDI Input File
+                </h4>
+              </div>
+            </div>
+          </div>
+          
+          <!-- MIDI Piano Roll Visualization (Canvas) -->
+          <div style="margin-bottom: 15px; display: flex; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #E8E8E8; overflow: hidden;">
+            <!-- Drum labels on the left -->
+            <canvas id="drum-labels-canvas" style="display: block; height: 265px; width: 85px; border-right: 1px solid rgba(0, 0, 0, 0.1);"></canvas>
+            <!-- Scrollable piano roll -->
+            <div id="piano-roll-container" style="overflow-x: auto; flex: 1; position: relative;">
+              <canvas id="piano-roll-canvas" style="display: block; height: 265px;"></canvas>
+            </div>
+          </div>
+          
+          <!-- MIDI Player -->
+          <div class="field">
+            <div class="control">
+              <midi-player
+                id="midi-player-main"
+                src="static/1_funk-groove1_138_beat_4-4.mid"
+                sound-font
+                visualizer="#midi-visualizer"
+                style="width: 100%; border-radius: 8px; display: block; margin: 0; padding: 0;">
+              </midi-player>
+            </div>
+          </div>
+          
+          <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.28/build/Midi.js"></script>
+          <script>
+            // Real-time MIDI Piano Roll Visualization
+            (async function() {
+              const player = document.getElementById('midi-player-main');
+              const container = document.getElementById('piano-roll-container');
+              const canvas = document.getElementById('piano-roll-canvas');
+              const ctx = canvas.getContext('2d');
+              const labelsCanvas = document.getElementById('drum-labels-canvas');
+              const labelsCtx = labelsCanvas.getContext('2d');
+              
+              // Custom drum map for this specific MIDI file (9 drums)
+              const drumNames = {
+                36: 'Bass',
+                38: 'Snare',
+                42: 'HH Close',
+                46: 'HH Open',
+                43: 'Floor Tom',
+                47: 'Mid Tom',
+                48: 'High Tom',
+                49: 'Crash',
+                51: 'Ride'
+              };
+              
+              let midiData = null;
+              let allNotes = [];
+              let duration = 0;
+              // Use only the actual pitches present in the MIDI (9 drums)
+              const usedPitches = [36, 38, 42, 46, 43, 47, 48, 49, 51]; // Bass, Snare, HH Close, HH Open, Floor Tom, Mid Tom, High Tom, Crash, Ride
+              const pixelsPerSecond = 50; // Scale: 50px per second (more notes visible)
+              
+              // Set label canvas size
+              labelsCanvas.width = 85;
+              labelsCanvas.height = 265; // Balanced height for visualization
+              
+              // Load and parse MIDI file
+              try {
+                const response = await fetch('static/1_funk-groove1_138_beat_4-4.mid');
+                const arrayBuffer = await response.arrayBuffer();
+                midiData = await Midi.fromUrl('static/1_funk-groove1_138_beat_4-4.mid');
+                
+                // Extract all notes from all tracks
+                midiData.tracks.forEach(track => {
+                  track.notes.forEach(note => {
+                    allNotes.push({
+                      pitch: note.midi,
+                      start: note.time,
+                      end: note.time + note.duration,
+                      velocity: note.velocity
+                    });
+                  });
+                });
+                
+                duration = midiData.duration;
+                
+                // Debug: Show all unique pitches
+                const uniquePitches = [...new Set(allNotes.map(n => n.pitch))].sort((a, b) => a - b);
+                console.log(`Loaded MIDI: ${allNotes.length} notes, duration: ${duration}s`);
+                console.log(`Unique pitches in MIDI:`, uniquePitches);
+                console.log(`Using pitch mapping:`, usedPitches);
+                
+                // Set canvas size
+                const canvasWidth = duration * pixelsPerSecond;
+                canvas.width = canvasWidth;
+                canvas.height = 265; // Balanced height for visualization
+                
+                // Initial draw
+                drawPianoRoll(0);
+                drawDrumLabels();
+                
+                // Animation loop for cursor and scrolling
+                function animate() {
+                  if (player.playing) {
+                    const currentTime = player.currentTime || 0;
+                    drawPianoRoll(currentTime);
+                    
+                    // Auto-scroll to keep cursor centered
+                    const cursorX = currentTime * pixelsPerSecond;
+                    const containerWidth = container.offsetWidth;
+                    container.scrollLeft = cursorX - (containerWidth / 2);
+                  }
+                  requestAnimationFrame(animate);
+                }
+                animate();
+                
+              } catch (error) {
+                console.error('Error loading MIDI:', error);
+                ctx.fillStyle = '#28a745';
+                ctx.font = '16px sans-serif';
+                ctx.fillText('Error loading MIDI file', 10, 150);
+              }
+              
+              function drawPianoRoll(currentTime) {
+                // Clear canvas with light gray background
+                ctx.fillStyle = '#E8E8E8';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                const numPitches = usedPitches.length; // 6 pitches
+                const pitchHeight = canvas.height / numPitches;
+                
+                // Draw alternating row backgrounds for better readability
+                usedPitches.forEach((pitch, index) => {
+                  if (index % 2 === 0) {
+                    const y = canvas.height - ((index + 1) * pitchHeight);
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
+                    ctx.fillRect(0, y, canvas.width, pitchHeight);
+                  }
+                });
+                
+                // Draw enhanced grid lines
+                ctx.strokeStyle = 'rgba(40, 167, 69, 0.15)';
+                ctx.lineWidth = 0.5;
+                
+                // Vertical grid lines (every second) with stronger lines every 4 seconds
+                for (let t = 0; t <= duration; t += 1) {
+                  const x = t * pixelsPerSecond;
+                  if (t % 4 === 0) {
+                    ctx.strokeStyle = 'rgba(40, 167, 69, 0.25)';
+                    ctx.lineWidth = 1;
+                  } else {
+                    ctx.strokeStyle = 'rgba(40, 167, 69, 0.1)';
+                    ctx.lineWidth = 0.5;
+                  }
+                  ctx.beginPath();
+                  ctx.moveTo(x, 0);
+                  ctx.lineTo(x, canvas.height);
+                  ctx.stroke();
+                }
+                
+                // Horizontal grid lines between each drum
+                ctx.strokeStyle = 'rgba(40, 167, 69, 0.1)';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i <= numPitches; i++) {
+                  const y = canvas.height - (i * pitchHeight);
+                  ctx.beginPath();
+                  ctx.moveTo(0, y);
+                  ctx.lineTo(canvas.width, y);
+                  ctx.stroke();
+                }
+                
+                // Draw all notes with drum-specific color palette
+                allNotes.forEach(note => {
+                  // Find the index of this pitch in our used pitches
+                  const pitchIndex = usedPitches.indexOf(note.pitch);
+                  if (pitchIndex === -1) return; // Skip notes not in our list
+                  
+                  const x = note.start * pixelsPerSecond;
+                  const width = Math.max((note.end - note.start) * pixelsPerSecond, 2);
+                  const y = canvas.height - ((pitchIndex + 1) * pitchHeight);
+                  const height = pitchHeight * 0.85;
+                  
+                  // Drum-specific color palette - soft pastel colors
+                  const drumColors = {
+                    36: { r: 126, g: 200, b: 227, name: 'Sky Blue' },         // Bass/Kick
+                    38: { r: 255, g: 166, b: 158, name: 'Salmon' },           // Snare
+                    42: { r: 162, g: 210, b: 255, name: 'Aqua' },             // Hi-Hat Closed
+                    46: { r: 184, g: 242, b: 230, name: 'Mint' },             // Hi-Hat Open
+                    43: { r: 160, g: 206, b: 217, name: 'Teal' },             // Floor Tom (Low Tom)
+                    47: { r: 224, g: 187, b: 228, name: 'Lilac' },            // Mid Tom
+                    48: { r: 255, g: 218, b: 193, name: 'Peach' },            // High Tom
+                    49: { r: 253, g: 253, b: 150, name: 'Light Yellow' },     // Crash
+                    51: { r: 203, g: 170, b: 203, name: 'Lavender' }          // Ride
+                  };
+                  
+                  const velocity = note.velocity;
+                  const isPlaying = currentTime >= note.start && currentTime <= note.end;
+                  
+                  // Get base color for this drum
+                  const baseColor = drumColors[note.pitch] || { r: 100, g: 100, b: 100 };
+                  
+                  // Adjust brightness and alpha based on velocity
+                  const velocityFactor = 0.4 + (velocity * 0.6); // Range from 40% to 100%
+                  const r = Math.floor(baseColor.r * velocityFactor);
+                  const g = Math.floor(baseColor.g * velocityFactor);
+                  const b = Math.floor(baseColor.b * velocityFactor);
+                  const alpha = 0.6 + (velocity * 0.4); // Range from 0.6 to 1.0
+                  
+                  if (isPlaying) {
+                    // Highlight currently playing notes with intense glow
+                    const glowIntensity = 10 + velocity * 15; // Stronger glow for louder notes
+                    ctx.shadowBlur = glowIntensity;
+                    ctx.shadowColor = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${Math.min(alpha + 0.4, 1)})`;
+                    
+                    // Brighter color when playing (use full base color)
+                    const playR = Math.min(255, baseColor.r + 40);
+                    const playG = Math.min(255, baseColor.g + 40);
+                    const playB = Math.min(255, baseColor.b + 40);
+                    
+                    const playGradient = ctx.createLinearGradient(x, y, x, y + height);
+                    playGradient.addColorStop(0, `rgba(${playR}, ${playG}, ${playB}, ${Math.min(alpha + 0.3, 1)})`);
+                    playGradient.addColorStop(1, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${alpha})`);
+                    ctx.fillStyle = playGradient;
+                    ctx.strokeStyle = `rgba(${playR}, ${playG}, ${playB}, 1)`;
+                    ctx.lineWidth = 1.5 + velocity;
+                  } else {
+                    ctx.shadowBlur = 0;
+                    
+                    // Create velocity-based gradient for notes
+                    const noteGradient = ctx.createLinearGradient(x, y, x, y + height);
+                    noteGradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${alpha})`);
+                    noteGradient.addColorStop(1, `rgba(${Math.floor(r * 0.7)}, ${Math.floor(g * 0.7)}, ${Math.floor(b * 0.7)}, ${alpha * 0.8})`);
+                    ctx.fillStyle = noteGradient;
+                    ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.9})`;
+                    ctx.lineWidth = 0.5 + velocity * 0.5;
+                  }
+                  
+                  // Draw rounded rectangle for notes
+                  const radius = Math.min(2, height / 4);
+                  ctx.beginPath();
+                  ctx.roundRect(x, y, width, height, radius);
+                  ctx.fill();
+                  ctx.stroke();
+                  ctx.shadowBlur = 0;
+                });
+                
+                // Draw playback cursor with enhanced styling
+                if (player.playing) {
+                  const cursorX = currentTime * pixelsPerSecond;
+                  
+                  // Draw glow effect
+                  ctx.shadowBlur = 10;
+                  ctx.shadowColor = 'rgba(255, 100, 100, 0.6)';
+                  
+                  // Draw cursor line with gradient
+                  const cursorGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                  cursorGradient.addColorStop(0, 'rgba(255, 50, 50, 0.9)');
+                  cursorGradient.addColorStop(0.5, 'rgba(255, 80, 80, 1)');
+                  cursorGradient.addColorStop(1, 'rgba(255, 50, 50, 0.9)');
+                  ctx.strokeStyle = cursorGradient;
+                  ctx.lineWidth = 3;
+                  ctx.beginPath();
+                  ctx.moveTo(cursorX, 0);
+                  ctx.lineTo(cursorX, canvas.height);
+                  ctx.stroke();
+                  ctx.shadowBlur = 0;
+                  
+                  // Draw time label with background
+                  const timeText = `${currentTime.toFixed(1)}s`;
+                  ctx.font = 'bold 11px sans-serif';
+                  const textWidth = ctx.measureText(timeText).width;
+                  
+                  // Background for time label
+                  ctx.fillStyle = 'rgba(255, 50, 50, 0.9)';
+                  ctx.fillRect(cursorX + 3, 8, textWidth + 8, 16);
+                  
+                  // Time text
+                  ctx.fillStyle = '#ffffff';
+                  ctx.fillText(timeText, cursorX + 7, 19);
+                }
+              }
+              
+              function drawDrumLabels() {
+                // Clear labels canvas with light gray background
+                labelsCtx.fillStyle = '#E8E8E8';
+                labelsCtx.fillRect(0, 0, labelsCanvas.width, labelsCanvas.height);
+                
+                const numPitches = usedPitches.length; // 6 pitches
+                const pitchHeight = labelsCanvas.height / numPitches;
+                
+                // Draw alternating row backgrounds
+                usedPitches.forEach((pitch, index) => {
+                  if (index % 2 === 0) {
+                    const y = labelsCanvas.height - ((index + 1) * pitchHeight);
+                    labelsCtx.fillStyle = 'rgba(0, 0, 0, 0.03)';
+                    labelsCtx.fillRect(0, y, labelsCanvas.width, pitchHeight);
+                  }
+                });
+                
+                labelsCtx.font = 'bold 10px sans-serif';
+                labelsCtx.textAlign = 'right';
+                labelsCtx.textBaseline = 'middle';
+                
+                usedPitches.forEach((pitch, index) => {
+                  const y = labelsCanvas.height - ((index + 0.5) * pitchHeight);
+                  
+                  // Determine label text
+                  let label = drumNames[pitch] || `${pitch}`;
+                  
+                  // Draw subtle horizontal line
+                  labelsCtx.strokeStyle = 'rgba(40, 167, 69, 0.15)';
+                  labelsCtx.lineWidth = 0.5;
+                  labelsCtx.beginPath();
+                  labelsCtx.moveTo(0, y);
+                  labelsCtx.lineTo(labelsCanvas.width, y);
+                  labelsCtx.stroke();
+                  
+                  // Draw label text with subtle shadow for better readability
+                  labelsCtx.shadowBlur = 2;
+                  labelsCtx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+                  labelsCtx.fillStyle = '#000000';
+                  labelsCtx.fillText(label, labelsCanvas.width - 4, y);
+                  labelsCtx.shadowBlur = 0;
+                });
+              }
+            })();
+          </script>
+          
+          <!-- <div class="field">
+            <div class="control">
+              <a href="static/1_funk-groove1_138_beat_4-4.mid" download class="button is-success is-fullwidth">
+                <span class="icon">
+                  <i class="fas fa-download"></i>
+                </span>
+                <span>Download MIDI</span>
+              </a>
+            </div>
+          </div> -->
+        </div>
       </div>
     </div>
 
-    <br>
-
     <h3 class="title is-4">Model Outputs Comparison</h3>
     <div class="table-container">
-      <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+      <table class="table is-striped is-narrow is-hoverable is-fullwidth" style="table-layout: fixed;">
+        <colgroup>
+          <col style="width: 25%;">
+          <col style="width: 37.5%;">
+          <col style="width: 37.5%;">
+        </colgroup>
         <thead>
           <tr>
-            <th>Epoch</th>
-            <th>Baseline Model</th>
-            <th>CTC Loss-Improved Model</th>
+            <th style="text-align: center;">Epoch</th>
+            <th style="text-align: center;">Baseline Model</th>
+            <th style="text-align: center;">MIDI-Conditioned Model</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>0 Epochs (Initial)</strong></td>
-            <td>
+            <td style="text-align: center; vertical-align: middle;"><strong>0 Epochs (Initial)</strong></td>
+            <td style="text-align: center; padding: 15px;">
               <div id="waveform-baseline-0" style="margin-bottom: 10px;"></div>
-              <canvas id="spectrogram-baseline-0" style="width: 800px; height: 250px; max-width: 100%; margin-bottom: 10px; border: 1px solid #333; border-radius: 4px;"></canvas>
-              <audio id="audio-baseline-0" controls>
+              <audio id="audio-baseline-0" controls style="width: 100%;">
                 <source src="static/baseline_model/epoch0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
             </td>
-            <td>
+            <td style="text-align: center; padding: 15px;">
               <div id="waveform-ctc-0" style="margin-bottom: 10px;"></div>
-              <canvas id="spectrogram-ctc-0" style="width: 800px; height: 250px; max-width: 100%; margin-bottom: 10px; border: 1px solid #333; border-radius: 4px;"></canvas>
-              <audio id="audio-ctc-0" controls>
+              <audio id="audio-ctc-0" controls style="width: 100%;">
                 <source src="static/ctc_loss/epoch0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
             </td>
           </tr>
           <tr>
-            <td><strong>10 Epochs</strong></td>
-            <td>
+            <td style="text-align: center; vertical-align: middle;"><strong>10 Epochs</strong></td>
+            <td style="text-align: center; padding: 15px;">
               <div id="waveform-baseline-10" style="margin-bottom: 10px;"></div>
-              <canvas id="spectrogram-baseline-10" style="width: 800px; height: 250px; max-width: 100%; margin-bottom: 10px; border: 1px solid #333; border-radius: 4px;"></canvas>
-              <audio id="audio-baseline-10" controls>
+              <audio id="audio-baseline-10" controls style="width: 100%;">
                 <source src="static/baseline_model/epoch10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
             </td>
-            <td>
+            <td style="text-align: center; padding: 15px;">
               <div id="waveform-ctc-10" style="margin-bottom: 10px;"></div>
-              <canvas id="spectrogram-ctc-10" style="width: 800px; height: 250px; max-width: 100%; margin-bottom: 10px; border: 1px solid #333; border-radius: 4px;"></canvas>
-              <audio id="audio-ctc-10" controls>
+              <audio id="audio-ctc-10" controls style="width: 100%;">
                 <source src="static/ctc_loss/epoch10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
             </td>
           </tr>
           <tr>
-            <td><strong>20 Epochs</strong></td>
-            <td>
+            <td style="text-align: center; vertical-align: middle;"><strong>20 Epochs</strong></td>
+            <td style="text-align: center; padding: 15px;">
               <div id="waveform-baseline-20" style="margin-bottom: 10px;"></div>
-              <canvas id="spectrogram-baseline-20" style="width: 800px; height: 250px; max-width: 100%; margin-bottom: 10px; border: 1px solid #333; border-radius: 4px;"></canvas>
-              <audio id="audio-baseline-20" controls>
+              <audio id="audio-baseline-20" controls style="width: 100%;">
                 <source src="static/baseline_model/epoch20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
             </td>
-            <td>
+            <td style="text-align: center; padding: 15px;">
               <div id="waveform-ctc-20" style="margin-bottom: 10px;"></div>
-              <canvas id="spectrogram-ctc-20" style="width: 800px; height: 250px; max-width: 100%; margin-bottom: 10px; border: 1px solid #333; border-radius: 4px;"></canvas>
-              <audio id="audio-ctc-20" controls>
+              <audio id="audio-ctc-20" controls style="width: 100%;">
                 <source src="static/ctc_loss/epoch20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
@@ -256,14 +767,12 @@
       </table>
     </div>
 
-    <br><br>
-
-    <h2 class="title is-3">Conclusion</h2>
-    <div class="columns is-centered has-text-centered">
+    <div class="columns is-centered">
       <div class="column is-four-fifths">
+        <h2 class="title is-3">Conclusion</h2>
         <div class="content has-text-justified">
           <p>
-            The quantitative results show that the CTC Loss-Improved model achieves a consistently lower Frechet VGGish Score, indicating a closer statistical similarity to the clean audio. This is corroborated by the perceptual evaluation of the audio samples, where the CTC model demonstrates superior denoising capabilities compared to the baseline model. This suggests that the inclusion of CTC loss is a promising direction for enhancing diffusion-based audio restoration tasks.
+            We presented a MIDI-conditioned diffusion model for drum audio enhancement that extends SGMSE with Feature-wise Linear Modulation (FiLM) layers. By incorporating symbolic musical information through a MIDI encoder, our model makes musically-informed enhancement decisions that preserve rhythmic structure and drum timbre. The results demonstrate that the CTC loss-enhanced model achieves consistently lower Frechet VGGish Scores compared to the baseline, with perceptual evaluation confirming superior denoising quality. This work validates the effectiveness of MIDI conditioning for audio enhancement and opens promising directions for extending this approach to other instruments, multi-track scenarios, and real-time applications.
           </p>
         </div>
       </div>
@@ -297,10 +806,14 @@
         <div class="content">
           <p>
             <strong>How to Cite:</strong><br>
-            [Author, A. A.] (2025). <em>Comparative Analysis of Diffusion Models for Audio Denoising</em>. Retrieved from [Your-URL-Here].
+            Aspis, E., & Gannot, S. (2025). <em>MIDI-Conditioned Diffusion Models for Drum Audio Enhancement</em>.
           </p>
           <p>
-            &copy; 2025 [Your Name/Affiliation]. All Rights Reserved.
+            &copy; 2025 Elad Aspis, Bar-Ilan University. All Rights Reserved.
+          </p>
+          <p>
+            <strong>Credits:</strong><br>
+            For the website we used the source code from the <a href="https://github.com/nerfies/nerfies.github.io" target="_blank">Nerfies</a> website.
           </p>
         </div>
       </div>
@@ -432,32 +945,34 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+
 <script>
-// Ultra-Fast Streaming STFT Spectrogram Generator (Single Full-Height)
-class SpectrogramGenerator {
-  constructor() {
-    this.fftSize = 1024;  
-    this.hopSize = 256;   
-    this.windowType = 'hanning';
-    this.scrollViewWidth = 800;
-    this.scrollViewHeight = 250; // Single spectrogram height
-    this.timeWindowSeconds = 5;
-    this.initialComputeSeconds = 5;
-    this.streamingBatchSeconds = 3;
-    this.isStreaming = new Map();
-  }
+// Spectrogram functionality removed - keeping only audio players
+console.log('Audio players initialized without spectrogram visualization');
+</script>
 
-  // Create Hanning window
-  createHanningWindow(size) {
-    const window = new Float32Array(size);
-    for (let i = 0; i < size; i++) {
-      window[i] = 0.5 * (1 - Math.cos(2 * Math.PI * i / (size - 1)));
-    }
-    return window;
+<script>
+// Function to load CSV data
+async function loadCSV(url) {
+  const response = await fetch(url);
+  const text = await response.text();
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',');
+  const data = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const values = lines[i].split(',');
+    const row = {};
+    headers.forEach((header, index) => {
+      row[header.trim()] = parseFloat(values[index]) || values[index];
+    });
+    data.push(row);
   }
+  return data;
+}
 
-  // Ultra-optimized magnitude spectrum calculation (skip frequency bins for speed)
-  calculateMagnitudeSpectrum(frameData) {
+// Initialize the chart
+async function initChart() {
     const N = frameData.length;
     const magnitudes = new Float32Array(N / 2);
     
@@ -544,23 +1059,31 @@ class SpectrogramGenerator {
       const channelData = audioBuffer.getChannelData(0);
       const sampleRate = audioBuffer.sampleRate;
       
-      console.log(`Generating optimized spectrogram for ${canvasId}`);
+      console.log(`Generating clean spectrogram for ${canvasId}`);
       console.log(`Audio: ${channelData.length} samples, ${sampleRate}Hz`);
       
-      // Single full-height spectrogram setup - FINAL FIX for tiling
-      const width = this.scrollViewWidth;  // 800
-      const height = this.scrollViewHeight; // 250
+      // Set fixed canvas dimensions to prevent scaling issues
+      const width = 800;
+      const height = 300;
       
-      // Set canvas internal dimensions
+      // Set canvas internal dimensions exactly
       canvas.width = width;
       canvas.height = height;
       
-      // Set CSS dimensions to match the buffer EXACTLY to prevent scaling/tiling
+      // Set CSS to match exactly - no scaling
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
+      canvas.style.maxWidth = 'none';
+      canvas.style.display = 'block';
+      canvas.style.imageRendering = 'pixelated';
       
-      // Allow the container to shrink on smaller screens
-      canvas.style.maxWidth = '100%';
+      // Clear the canvas completely first
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, width, height);
+      
+      // Update internal dimensions for rendering
+      this.scrollViewWidth = width;
+      this.scrollViewHeight = height;
 
       // Calculate high-resolution parameters
       const framesPerSecond = sampleRate / this.hopSize;
@@ -568,34 +1091,27 @@ class SpectrogramGenerator {
       const totalDuration = totalFrames / framesPerSecond;
       const frequencyBins = this.fftSize / 2;
       
-      console.log(`🚀 Smart streaming mode: ${totalFrames} frames, ${totalDuration.toFixed(1)}s total`);
-      console.log(`📊 Initial compute: ${this.initialComputeSeconds}s, then stream during playback`);
+      console.log(`🚀 Clean rendering mode: ${totalFrames} frames, ${totalDuration.toFixed(1)}s total`);
+      console.log(`📊 Processing ${this.initialComputeSeconds}s for immediate display`);
       
       // Pre-create window
       const window = this.createHanningWindow(this.fftSize);
       
-      // Calculate initial processing range (first 20 seconds)
+      // Calculate initial processing range (first 5 seconds)
       const initialFrames = Math.min(totalFrames, Math.floor(this.initialComputeSeconds * framesPerSecond));
       const spectrogramData = new Array(totalFrames); // Pre-allocate full array
       
-      console.log(`⚡ INSTANT MODE: Processing first ${this.initialComputeSeconds}s only...`);
-      console.log(`🎯 Ultra-fast params: ${initialFrames} frames for instant loading`);
+      console.log(`⚡ CLEAN MODE: Processing ${initialFrames} frames for crisp display`);
       
       // Process initial frames with maximum speed
       const batchSize = 25; // Smaller batches for responsiveness
       for (let batchStart = 0; batchStart < initialFrames; batchStart += batchSize) {
         const batchEnd = Math.min(batchStart + batchSize, initialFrames);
         
-        // Minimal progress updates
-        if (batchStart % 100 === 0) {
+        // Clean progress display without overlays
+        if (batchStart % 200 === 0) {
           const progress = Math.floor((batchStart / initialFrames) * 100);
-          
-          // Quick progress display
-          ctx.fillStyle = '#1a1a2e';
-          ctx.fillRect(0, 0, width, height);
-          ctx.fillStyle = '#00ff88';
-          ctx.font = '18px Arial';
-          ctx.fillText(`⚡ ${progress}%`, 10, height/2);
+          console.log(`Processing: ${progress}% complete`);
         }
         
         
@@ -619,12 +1135,13 @@ class SpectrogramGenerator {
         // No delays for maximum speed
       }
 
-      console.log(`🚀 INSTANT READY! ${this.initialComputeSeconds}s computed in record time!`);      
-      // Store canvas info with streaming setup
+      console.log(`🚀 CLEAN RENDER READY! ${this.initialComputeSeconds}s computed for display`);      
+      
+      // Store canvas info
       const spectrogramFramesPerSecond = sampleRate / this.hopSize;
       this.storeCanvasInfo(canvasId, width, height, totalDuration, spectrogramData, spectrogramFramesPerSecond, frequencyBins, sampleRate, channelData, window, initialFrames);
       
-      // Initial render (show first 5 seconds)
+      // Single clean render
       this.renderScrollingView(canvasId, 0);
       
     } catch (error) {
@@ -717,17 +1234,19 @@ class SpectrogramGenerator {
     const ctx = canvas.getContext('2d');
     const info = this.canvasInfo[canvasId];
     
-    // Calculate time window
-    const startTime = Math.max(0, centerTime - this.timeWindowSeconds / 2);
-    const endTime = Math.min(info.duration, centerTime + this.timeWindowSeconds / 2);
+    // Calculate scrolling time window
+    const windowDuration = Math.min(this.timeWindowSeconds, info.duration);
+    const startTime = Math.max(0, centerTime - windowDuration / 2);
+    const endTime = Math.min(info.duration, centerTime + windowDuration / 2);
     
-    // Calculate frame indices
+    // Calculate frame indices for visible window
     const startFrame = Math.floor(startTime * info.framesPerSecond);
     const endFrame = Math.min(info.spectrogramData.length - 1, Math.floor(endTime * info.framesPerSecond));
-    const visibleFrames = endFrame - startFrame + 1;
+    const visibleFrames = Math.max(1, endFrame - startFrame + 1);
     
-    // Clear canvas with solid background first
-    ctx.fillStyle = '#1a1a2e';
+    // Clear canvas completely first
+    ctx.clearRect(0, 0, info.width, info.height);
+    ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, info.width, info.height);
     
     if (visibleFrames <= 0) return;
@@ -757,13 +1276,15 @@ class SpectrogramGenerator {
       maxMagnitude = -10;
     }
     
-    // Render the visible time window
+    // Create single clean imageData render
     const imageData = ctx.createImageData(info.width, info.height);
     const data = imageData.data;
     
+    // Render scrolling window of spectrogram
     for (let x = 0; x < info.width; x++) {
-      const frameProgress = x / info.width;
-      const currentFrameIdx = startFrame + Math.floor(frameProgress * visibleFrames);
+      const timeProgress = x / info.width;
+      const currentTime = startTime + timeProgress * (endTime - startTime);
+      const currentFrameIdx = Math.floor(currentTime * info.framesPerSecond);
       
       if (currentFrameIdx >= 0 && currentFrameIdx < info.spectrogramData.length && info.spectrogramData[currentFrameIdx]) {
         const frame = info.spectrogramData[currentFrameIdx];
@@ -783,26 +1304,15 @@ class SpectrogramGenerator {
             data[pixelIndex + 3] = 255;
           }
         }
-      } else {
-        // Frame not computed yet - show loading pattern
-        for (let y = 0; y < info.height; y++) {
-          const pixelIndex = (y * info.width + x) * 4;
-          // Dark blue loading pattern
-          data[pixelIndex] = 20;     // R
-          data[pixelIndex + 1] = 30; // G  
-          data[pixelIndex + 2] = 60; // B
-          data[pixelIndex + 3] = 255; // A
-        }
       }
+      // Black for uncomputed regions
     }
     
+    // Single render to canvas - no overlays to prevent artifacts
     ctx.putImageData(imageData, 0, 0);
     
-    // Add time grid and labels
-    this.drawTimeGrid(ctx, info, startTime, endTime);
-    
-    // Add frequency labels
-    this.drawFrequencyLabels(ctx, info);
+    // Skip grid and labels to prevent visual artifacts
+    // Clean spectrogram display only
     
     // Update stored scroll time
     info.currentScrollTime = centerTime;
@@ -872,51 +1382,29 @@ class SpectrogramGenerator {
     });
   }
 
-  // Draw scrolling time cursor
+  // Clean time cursor with minimal overlay
   drawTimeCursor(canvasId, currentTime) {
     if (!this.canvasInfo || !this.canvasInfo[canvasId]) return;
-    
-    const info = this.canvasInfo[canvasId];
-    
-    // Trigger streaming computation for upcoming audio
-    this.streamingCompute(canvasId, currentTime);
-    
-    // Update scrolling view to center on current time
-    this.renderScrollingView(canvasId, currentTime);
     
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
+    const info = this.canvasInfo[canvasId];
     
-    // Draw cursor at center of view (since we scroll to center on current time)
-    const cursorX = info.width / 2;
+    // Re-render spectrogram first
+    this.renderScrollingView(canvasId, currentTime);
     
-    // Draw time cursor line
+    // Draw simple time cursor line
+    const progress = currentTime / info.duration;
+    const cursorX = progress * info.width;
+    
     ctx.strokeStyle = '#00ff88';
     ctx.lineWidth = 2;
-    ctx.setLineDash([]);
     ctx.beginPath();
     ctx.moveTo(cursorX, 0);
     ctx.lineTo(cursorX, info.height);
     ctx.stroke();
-    
-    // Draw cursor triangle at top
-    ctx.fillStyle = '#00ff88';
-    ctx.beginPath();
-    ctx.moveTo(cursorX - 4, 0);
-    ctx.lineTo(cursorX + 4, 0);
-    ctx.lineTo(cursorX, 8);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Draw time label
-    const timeText = `${currentTime.toFixed(1)}s`;
-    ctx.font = '10px Arial';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-    ctx.fillRect(cursorX - 15, 12, 30, 14);
-    ctx.fillStyle = '#00ff88';
-    ctx.fillText(timeText, cursorX - 12, 22);
   }
 
   // Setup audio sync for a specific audio element and canvas
@@ -964,22 +1452,10 @@ class SpectrogramGenerator {
     try {
       console.log(`🎵 Loading audio for optimized spectrogram: ${audioUrl}`);
       
-      // Show initial loading
+      // Simple loading indication
       const canvas = document.getElementById(canvasId);
       if (canvas) {
-        const ctx = canvas.getContext('2d');
-        canvas.width = 800;
-        canvas.height = 256;
-        
-        const gradient = ctx.createLinearGradient(0, 0, 800, 256);
-        gradient.addColorStop(0, '#1a1a2e');
-        gradient.addColorStop(1, '#16213e');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, 800, 256);
-        
-        ctx.fillStyle = '#00ff88';
-        ctx.font = '14px Arial';
-        ctx.fillText('Loading audio...', 10, 128);
+        console.log(`🎵 Loading ${canvasId}...`);
       }
       
       const response = await fetch(audioUrl);
@@ -1015,80 +1491,79 @@ class SpectrogramGenerator {
   }
 }
 
-// Initialize Adobe Audition-style spectrograms
+// Simple test visualization - draw immediately
+function drawTestPattern(canvasId, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) {
+    console.error(`Canvas ${canvasId} not found!`);
+    return;
+  }
+  
+  console.log(`Drawing test pattern for ${canvasId}`);
+  const ctx = canvas.getContext('2d');
+  
+  // Get the display size
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width || 400;
+  canvas.height = 120;
+  
+  // Draw background
+  ctx.fillStyle = '#1a1a2e';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw some bars to test
+  ctx.fillStyle = color;
+  for (let i = 0; i < 50; i++) {
+    const x = (i / 50) * canvas.width;
+    const barHeight = Math.random() * canvas.height;
+    ctx.fillRect(x, canvas.height - barHeight, canvas.width / 50 - 2, barHeight);
+  }
+  
+  // Draw text
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '16px Arial';
+  ctx.fillText('Audio Visualization', 10, 30);
+  
+  console.log(`✓ Test pattern drawn for ${canvasId}: ${canvas.width}x${canvas.height}`);
+}
+
+// Initialize spectrograms with audio sync
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('� Initializing Adobe Audition-style spectrograms...');
+  console.log('🎵 Initializing spectrograms with audio sync...');
   
   const spectrogramGenerator = new SpectrogramGenerator();
   
+  // Draw test patterns immediately
+  console.log('� Drawing test visualizations...');
+  drawTestPattern('spec-clean', '#00ff88');
+  drawTestPattern('spec-noisy', '#ff9900');
+  
   setTimeout(() => {
-    console.log('🚀 Starting Adobe Audition-style spectrogram generation for all epochs...');
+    console.log('🚀 Starting spectrogram generation with audio sync...');
     
-    // Reference audio spectrograms
-    console.log('Generating reference audio spectrograms...');
-    spectrogramGenerator.loadAndGenerateSpectrogram(
-      'static/clean_10_soul-groove10_102_4-4_bluebird.wav',
-      'spectrogram-clean'
-    );
+    // Generate main spectrograms with audio sync
+    const canvasesToGenerate = [
+      { id: 'spectrogram-clean', url: 'static/clean_10_soul-groove10_102_4-4_bluebird.wav', audio: 'audio-clean' },
+      { id: 'spectrogram-noisy', url: 'static/noisy_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav', audio: 'audio-noisy' }
+    ];
     
-    spectrogramGenerator.loadAndGenerateSpectrogram(
-      'static/noisy_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav',
-      'spectrogram-noisy'
-    );
-    
-    // Epoch 0 spectrograms (minimal delay for instant loading)
-    setTimeout(() => {
-      spectrogramGenerator.loadAndGenerateSpectrogram(
-        'static/baseline_model/epoch0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav',
-        'spectrogram-baseline-0'
-      );
-      
-      spectrogramGenerator.loadAndGenerateSpectrogram(
-        'static/ctc_loss/epoch0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav',
-        'spectrogram-ctc-0'
-      );
-    }, 500); // Reduced from 3000ms
-    
-    // Epoch 10 spectrograms
-    setTimeout(() => {
-      spectrogramGenerator.loadAndGenerateSpectrogram(
-        'static/baseline_model/epoch10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav',
-        'spectrogram-baseline-10'
-      );
-      
-      spectrogramGenerator.loadAndGenerateSpectrogram(
-        'static/ctc_loss/epoch10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav',
-        'spectrogram-ctc-10'
-      );
-    }, 1000); // Reduced from 6000ms
-    
-    // Epoch 20 spectrograms
-    setTimeout(() => {
-      spectrogramGenerator.loadAndGenerateSpectrogram(
-        'static/baseline_model/epoch20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav',
-        'spectrogram-baseline-20'
-      );
-      
-      spectrogramGenerator.loadAndGenerateSpectrogram(
-        'static/ctc_loss/epoch20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav',
-        'spectrogram-ctc-20'
-      );
-    }, 1500); // Reduced from 9000ms
-    
-    // Setup audio synchronization (earlier setup)
-    setTimeout(() => {
-      // Reference audio sync
-      spectrogramGenerator.setupAudioSync('audio-clean', 'spectrogram-clean');
-      spectrogramGenerator.setupAudioSync('audio-noisy', 'spectrogram-noisy');
-      
-      // Model outputs sync
-      spectrogramGenerator.setupAudioSync('audio-baseline-0', 'spectrogram-baseline-0');
-      spectrogramGenerator.setupAudioSync('audio-ctc-0', 'spectrogram-ctc-0');
-      spectrogramGenerator.setupAudioSync('audio-baseline-10', 'spectrogram-baseline-10');
-      spectrogramGenerator.setupAudioSync('audio-ctc-10', 'spectrogram-ctc-10');
-      spectrogramGenerator.setupAudioSync('audio-baseline-20', 'spectrogram-baseline-20');
-      spectrogramGenerator.setupAudioSync('audio-ctc-20', 'spectrogram-ctc-20');
-    }, 2000); // Reduced from 12000ms
+    // Generate spectrograms with audio synchronization
+    canvasesToGenerate.forEach((item, index) => {
+      const canvas = document.getElementById(item.id);
+      if (canvas) {
+        console.log(`✅ Found canvas: ${item.id}`);
+        setTimeout(() => {
+          spectrogramGenerator.loadAndGenerateSpectrogram(item.url, item.id);
+          
+          // Setup audio sync after generation
+          setTimeout(() => {
+            spectrogramGenerator.setupAudioSync(item.audio, item.id);
+          }, 2000);
+        }, index * 1500); // Staggered generation
+      } else {
+        console.log(`⚠️ Canvas not found: ${item.id}`);
+      }
+    });
     
   }, 1000);
 });
@@ -1225,6 +1700,54 @@ document.addEventListener('DOMContentLoaded', initChart);
 </script>
 
 <style>
+  /* MIDI Player Consistent Styling */
+  midi-player {
+    width: 100% !important;
+    height: 40px !important;
+    max-height: 40px !important;
+    min-height: 40px !important;
+    border-radius: 8px !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    font-size: 12px !important;
+  }
+  
+  /* Target internal elements of midi-player */
+  midi-player::part(control-panel) {
+    height: 40px !important;
+    max-height: 40px !important;
+  }
+
+  /* Force MIDI player field and control to have no extra spacing */
+  .box .field .control midi-player {
+    line-height: 40px !important;
+  }
+  
+  .box .field .control {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Remove extra spacing from Bulma's field class in audio reference boxes */
+  .box .field:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  /* Make all three reference cards equal height */
+  .columns.is-centered > .column.is-4 {
+    display: flex !important;
+  }
+  
+  .columns.is-centered > .column.is-4 > .box {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-height: 100% !important;
+  }
+
   /* Responsive Design Adjustments */
   @media (max-width: 768px) {
     .container {
@@ -1260,6 +1783,26 @@ document.addEventListener('DOMContentLoaded', initChart);
     }
   }
 </style>
+
+<script>
+// Force MathJax to typeset when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.MathJax) {
+    MathJax.typesetPromise().then(() => {
+      console.log('MathJax typesetting complete');
+    }).catch((err) => console.log('MathJax typesetting failed: ', err));
+  } else {
+    // Wait for MathJax to load
+    setTimeout(() => {
+      if (window.MathJax) {
+        MathJax.typesetPromise().then(() => {
+          console.log('MathJax typesetting complete (delayed)');
+        }).catch((err) => console.log('MathJax typesetting failed: ', err));
+      }
+    }, 2000);
+  }
+});
+</script>
 
   </body>
   </html>
