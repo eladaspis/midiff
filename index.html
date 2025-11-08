@@ -37,6 +37,34 @@
   href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="static/css/index.css">
 
+  <style>
+    /* Force scrollbars to always be visible on spectrogram containers */
+    .spectrogram-scroll-container::-webkit-scrollbar {
+      height: 12px;
+    }
+    .spectrogram-scroll-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 6px;
+    }
+    .spectrogram-scroll-container::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 6px;
+    }
+    .spectrogram-scroll-container::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    /* For Firefox */
+    .spectrogram-scroll-container {
+      scrollbar-width: auto;
+      scrollbar-color: #888 #f1f1f1;
+    }
+    /* Epoch card sizing */
+    .epoch-card {
+      width: 210px !important;
+      min-width: 210px !important;
+    }
+  </style>
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
@@ -162,8 +190,7 @@
     <!-- Architecture Section with Text and Figures -->
     <div class="columns is-centered" style="margin-top: 3rem;">
       <div class="column is-four-fifths">
-        <!-- First Row: Text on Left, MIDI Encoder on Right -->
-        <div class="columns is-centered">
+        <div class="columns">
           <div class="column is-6">
             <div class="content has-text-justified">
               <h3 class="title is-4">MIDI-Conditioned Architecture</h3>
@@ -178,20 +205,23 @@
               </p>
             </div>
           </div>
-          <div class="column is-1">
-          </div>
-          <div class="column is-4" style="margin-top: 4rem;">
-            <figure>
-              <img src="static/figures/MidiConditionEncoder.excalidraw.png" alt="Residual Block with MIDI Conditioning via FiLM Layers" style="width: 100%;">
-              <figcaption class=""">
+          <div class="column is-1"></div>
+          <div class="column is-4">
+            <figure style="margin-top: 3rem; text-align: center;">
+              <img src="static/figures/MidiConditionEncoder.excalidraw.png" alt="Residual Block with MIDI Conditioning via FiLM Layers" style="max-width: 100%; width: 100%;">
+              <figcaption>
                 <strong>Figure 1:</strong> Residual Block with MIDI Conditioning via FiLM Layers
               </figcaption>
             </figure>
           </div>
         </div>
-        
-        <!-- Second Row: FiLM Implementation Below -->
-        <div class="columns is-centered" style="margin-top: 3rem;">
+      </div>
+    </div>
+
+    <!-- FiLM Section -->
+    <div class="columns is-centered" style="margin-top: 3rem;">
+      <div class="column is-four-fifths">
+        <div class="columns">
           <div class="column is-6">
             <div class="content has-text-justified">
               <h3 class="title is-4">Feature-wise Linear Modulation (FiLM)</h3>
@@ -215,12 +245,10 @@
               </p>
             </div>
           </div>
-          <div class="column is-2">
-          </div>
-
-          <div class="column is-3" style="margin-top: 5rem;">
-            <figure>
-              <img src="static/figures/FiLM_implementation.png" alt="FiLM Implementation" style="width: 100%;">
+          <div class="column is-2"></div>
+          <div class="column is-3">
+            <figure style="margin-top: 3rem; text-align: center;">
+              <img src="static/figures/FiLM_implementation.png" alt="FiLM Implementation" style="max-width: 100%; width: 100%;">
               <figcaption>
                 <strong>Figure 2:</strong> Feature-wise Linear Modulation (FiLM) Implementation
               </figcaption>
@@ -245,29 +273,7 @@
       </div>
     </div>
 
-    <!-- Results Section -->
-    <div class="columns is-centered" style="margin-top: 3rem;">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Results</h2>
-        <div class="content">
-          <p>To quantitatively evaluate performance, we calculated standard audio quality metrics. The Frechet VGGish Score measures the similarity between distributions of embeddings from the generated audio and the ground truth clean audio. <strong>A lower score indicates higher similarity to the clean audio.</strong></p>
-        </div>
-        
-        <figure style="margin-top: 2rem;">
-          <div style="width: 100%; height: 400px; margin: 20px 0;">
-            <canvas id="frechetChart"></canvas>
-          </div>
-          <figcaption>Figure 3: Interactive Frechet VGGish Score for Baseline vs. CTC Loss models. The CTC Loss model shows a consistently lower (better) score throughout the training process. Hover over points to see exact values.</figcaption>
-        </figure>
-      </div>
-    </div>
-
-    <h2 class="title is-3" style="margin-top: 3rem;">Audio Samples</h2>
-    <div class="content">
-      <p>The following samples provide a direct perceptual comparison. The "Clean Original" and "Noisy Input" are provided as references.</p>
-    </div>
-
-    <h3 class="title is-4">Audio Reference Samples</h3>
+    <!-- <h3 class="title is-4">Audio Reference Samples</h3> -->
     
     <!-- Clean, Noisy, and MIDI Reference in One Line -->
     <div class="columns is-centered" style="margin-bottom: 30px;">
@@ -288,8 +294,8 @@
           </div>
           
           <!-- Compact Spectrogram visualization -->
-          <div style="margin-bottom: 15px; display: flex; justify-content: center;">
-            <img src="static/images/spec_clean.png" alt="Clean Audio Spectrogram" style="width: auto; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+          <div class="spectrogram-scroll-container" style="margin-bottom: 15px; display: flex; justify-content: flex-start; border: 2px solid #dee2e6; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.3); height: 270px; cursor: grab;">
+            <img src="static/images/spec_clean.png" alt="Clean Audio Spectrogram" style="height: 265px; width: auto; display: inline-block; max-width: none;">
           </div>
           
           <div class="field">
@@ -320,8 +326,8 @@
           </div>
           
           <!-- Compact Spectrogram visualization -->
-          <div style="margin-bottom: 15px; display: flex; justify-content: center;">
-            <img src="static/images/spec_noisy.png" alt="Noisy Audio Spectrogram" style="width: auto; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+          <div class="spectrogram-scroll-container" style="margin-bottom: 15px; display: flex; justify-content: flex-start; border: 2px solid #ffc107; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.3); height: 270px; cursor: grab;">
+            <img src="static/images/spec_noisy.png" alt="Noisy Audio Spectrogram" style="height: 265px; width: auto; display: inline-block; max-width: none;">
           </div>
           
           <div class="field">
@@ -373,387 +379,156 @@
               </midi-player>
             </div>
           </div>
-          
-          <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.28/build/Midi.js"></script>
-          <script>
-            // Real-time MIDI Piano Roll Visualization
-            (async function() {
-              const player = document.getElementById('midi-player-main');
-              const container = document.getElementById('piano-roll-container');
-              const canvas = document.getElementById('piano-roll-canvas');
-              const ctx = canvas.getContext('2d');
-              const labelsCanvas = document.getElementById('drum-labels-canvas');
-              const labelsCtx = labelsCanvas.getContext('2d');
-              
-              // Custom drum map for this specific MIDI file (9 drums)
-              const drumNames = {
-                36: 'Bass',
-                38: 'Snare',
-                42: 'HH Close',
-                46: 'HH Open',
-                43: 'Floor Tom',
-                47: 'Mid Tom',
-                48: 'High Tom',
-                49: 'Crash',
-                51: 'Ride'
-              };
-              
-              let midiData = null;
-              let allNotes = [];
-              let duration = 0;
-              // Use only the actual pitches present in the MIDI (9 drums)
-              const usedPitches = [36, 38, 42, 46, 43, 47, 48, 49, 51]; // Bass, Snare, HH Close, HH Open, Floor Tom, Mid Tom, High Tom, Crash, Ride
-              const pixelsPerSecond = 50; // Scale: 50px per second (more notes visible)
-              
-              // Set label canvas size
-              labelsCanvas.width = 85;
-              labelsCanvas.height = 265; // Balanced height for visualization
-              
-              // Load and parse MIDI file
-              try {
-                const response = await fetch('static/1_funk-groove1_138_beat_4-4.mid');
-                const arrayBuffer = await response.arrayBuffer();
-                midiData = await Midi.fromUrl('static/1_funk-groove1_138_beat_4-4.mid');
-                
-                // Extract all notes from all tracks
-                midiData.tracks.forEach(track => {
-                  track.notes.forEach(note => {
-                    allNotes.push({
-                      pitch: note.midi,
-                      start: note.time,
-                      end: note.time + note.duration,
-                      velocity: note.velocity
-                    });
-                  });
-                });
-                
-                duration = midiData.duration;
-                
-                // Debug: Show all unique pitches
-                const uniquePitches = [...new Set(allNotes.map(n => n.pitch))].sort((a, b) => a - b);
-                console.log(`Loaded MIDI: ${allNotes.length} notes, duration: ${duration}s`);
-                console.log(`Unique pitches in MIDI:`, uniquePitches);
-                console.log(`Using pitch mapping:`, usedPitches);
-                
-                // Set canvas size
-                const canvasWidth = duration * pixelsPerSecond;
-                canvas.width = canvasWidth;
-                canvas.height = 265; // Balanced height for visualization
-                
-                // Initial draw
-                drawPianoRoll(0);
-                drawDrumLabels();
-                
-                // Animation loop for cursor and scrolling
-                function animate() {
-                  if (player.playing) {
-                    const currentTime = player.currentTime || 0;
-                    drawPianoRoll(currentTime);
-                    
-                    // Auto-scroll to keep cursor centered
-                    const cursorX = currentTime * pixelsPerSecond;
-                    const containerWidth = container.offsetWidth;
-                    container.scrollLeft = cursorX - (containerWidth / 2);
-                  }
-                  requestAnimationFrame(animate);
-                }
-                animate();
-                
-              } catch (error) {
-                console.error('Error loading MIDI:', error);
-                ctx.fillStyle = '#28a745';
-                ctx.font = '16px sans-serif';
-                ctx.fillText('Error loading MIDI file', 10, 150);
-              }
-              
-              function drawPianoRoll(currentTime) {
-                // Clear canvas with light gray background
-                ctx.fillStyle = '#E8E8E8';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                const numPitches = usedPitches.length; // 6 pitches
-                const pitchHeight = canvas.height / numPitches;
-                
-                // Draw alternating row backgrounds for better readability
-                usedPitches.forEach((pitch, index) => {
-                  if (index % 2 === 0) {
-                    const y = canvas.height - ((index + 1) * pitchHeight);
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
-                    ctx.fillRect(0, y, canvas.width, pitchHeight);
-                  }
-                });
-                
-                // Draw enhanced grid lines
-                ctx.strokeStyle = 'rgba(40, 167, 69, 0.15)';
-                ctx.lineWidth = 0.5;
-                
-                // Vertical grid lines (every second) with stronger lines every 4 seconds
-                for (let t = 0; t <= duration; t += 1) {
-                  const x = t * pixelsPerSecond;
-                  if (t % 4 === 0) {
-                    ctx.strokeStyle = 'rgba(40, 167, 69, 0.25)';
-                    ctx.lineWidth = 1;
-                  } else {
-                    ctx.strokeStyle = 'rgba(40, 167, 69, 0.1)';
-                    ctx.lineWidth = 0.5;
-                  }
-                  ctx.beginPath();
-                  ctx.moveTo(x, 0);
-                  ctx.lineTo(x, canvas.height);
-                  ctx.stroke();
-                }
-                
-                // Horizontal grid lines between each drum
-                ctx.strokeStyle = 'rgba(40, 167, 69, 0.1)';
-                ctx.lineWidth = 0.5;
-                for (let i = 0; i <= numPitches; i++) {
-                  const y = canvas.height - (i * pitchHeight);
-                  ctx.beginPath();
-                  ctx.moveTo(0, y);
-                  ctx.lineTo(canvas.width, y);
-                  ctx.stroke();
-                }
-                
-                // Draw all notes with drum-specific color palette
-                allNotes.forEach(note => {
-                  // Find the index of this pitch in our used pitches
-                  const pitchIndex = usedPitches.indexOf(note.pitch);
-                  if (pitchIndex === -1) return; // Skip notes not in our list
-                  
-                  const x = note.start * pixelsPerSecond;
-                  const width = Math.max((note.end - note.start) * pixelsPerSecond, 2);
-                  const y = canvas.height - ((pitchIndex + 1) * pitchHeight);
-                  const height = pitchHeight * 0.85;
-                  
-                  // Drum-specific color palette - soft pastel colors
-                  const drumColors = {
-                    36: { r: 126, g: 200, b: 227, name: 'Sky Blue' },         // Bass/Kick
-                    38: { r: 255, g: 166, b: 158, name: 'Salmon' },           // Snare
-                    42: { r: 162, g: 210, b: 255, name: 'Aqua' },             // Hi-Hat Closed
-                    46: { r: 184, g: 242, b: 230, name: 'Mint' },             // Hi-Hat Open
-                    43: { r: 160, g: 206, b: 217, name: 'Teal' },             // Floor Tom (Low Tom)
-                    47: { r: 224, g: 187, b: 228, name: 'Lilac' },            // Mid Tom
-                    48: { r: 255, g: 218, b: 193, name: 'Peach' },            // High Tom
-                    49: { r: 253, g: 253, b: 150, name: 'Light Yellow' },     // Crash
-                    51: { r: 203, g: 170, b: 203, name: 'Lavender' }          // Ride
-                  };
-                  
-                  const velocity = note.velocity;
-                  const isPlaying = currentTime >= note.start && currentTime <= note.end;
-                  
-                  // Get base color for this drum
-                  const baseColor = drumColors[note.pitch] || { r: 100, g: 100, b: 100 };
-                  
-                  // Adjust brightness and alpha based on velocity
-                  const velocityFactor = 0.4 + (velocity * 0.6); // Range from 40% to 100%
-                  const r = Math.floor(baseColor.r * velocityFactor);
-                  const g = Math.floor(baseColor.g * velocityFactor);
-                  const b = Math.floor(baseColor.b * velocityFactor);
-                  const alpha = 0.6 + (velocity * 0.4); // Range from 0.6 to 1.0
-                  
-                  if (isPlaying) {
-                    // Highlight currently playing notes with intense glow
-                    const glowIntensity = 10 + velocity * 15; // Stronger glow for louder notes
-                    ctx.shadowBlur = glowIntensity;
-                    ctx.shadowColor = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${Math.min(alpha + 0.4, 1)})`;
-                    
-                    // Brighter color when playing (use full base color)
-                    const playR = Math.min(255, baseColor.r + 40);
-                    const playG = Math.min(255, baseColor.g + 40);
-                    const playB = Math.min(255, baseColor.b + 40);
-                    
-                    const playGradient = ctx.createLinearGradient(x, y, x, y + height);
-                    playGradient.addColorStop(0, `rgba(${playR}, ${playG}, ${playB}, ${Math.min(alpha + 0.3, 1)})`);
-                    playGradient.addColorStop(1, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${alpha})`);
-                    ctx.fillStyle = playGradient;
-                    ctx.strokeStyle = `rgba(${playR}, ${playG}, ${playB}, 1)`;
-                    ctx.lineWidth = 1.5 + velocity;
-                  } else {
-                    ctx.shadowBlur = 0;
-                    
-                    // Create velocity-based gradient for notes
-                    const noteGradient = ctx.createLinearGradient(x, y, x, y + height);
-                    noteGradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${alpha})`);
-                    noteGradient.addColorStop(1, `rgba(${Math.floor(r * 0.7)}, ${Math.floor(g * 0.7)}, ${Math.floor(b * 0.7)}, ${alpha * 0.8})`);
-                    ctx.fillStyle = noteGradient;
-                    ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.9})`;
-                    ctx.lineWidth = 0.5 + velocity * 0.5;
-                  }
-                  
-                  // Draw rounded rectangle for notes
-                  const radius = Math.min(2, height / 4);
-                  ctx.beginPath();
-                  ctx.roundRect(x, y, width, height, radius);
-                  ctx.fill();
-                  ctx.stroke();
-                  ctx.shadowBlur = 0;
-                });
-                
-                // Draw playback cursor with enhanced styling
-                if (player.playing) {
-                  const cursorX = currentTime * pixelsPerSecond;
-                  
-                  // Draw glow effect
-                  ctx.shadowBlur = 10;
-                  ctx.shadowColor = 'rgba(255, 100, 100, 0.6)';
-                  
-                  // Draw cursor line with gradient
-                  const cursorGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                  cursorGradient.addColorStop(0, 'rgba(255, 50, 50, 0.9)');
-                  cursorGradient.addColorStop(0.5, 'rgba(255, 80, 80, 1)');
-                  cursorGradient.addColorStop(1, 'rgba(255, 50, 50, 0.9)');
-                  ctx.strokeStyle = cursorGradient;
-                  ctx.lineWidth = 3;
-                  ctx.beginPath();
-                  ctx.moveTo(cursorX, 0);
-                  ctx.lineTo(cursorX, canvas.height);
-                  ctx.stroke();
-                  ctx.shadowBlur = 0;
-                  
-                  // Draw time label with background
-                  const timeText = `${currentTime.toFixed(1)}s`;
-                  ctx.font = 'bold 11px sans-serif';
-                  const textWidth = ctx.measureText(timeText).width;
-                  
-                  // Background for time label
-                  ctx.fillStyle = 'rgba(255, 50, 50, 0.9)';
-                  ctx.fillRect(cursorX + 3, 8, textWidth + 8, 16);
-                  
-                  // Time text
-                  ctx.fillStyle = '#ffffff';
-                  ctx.fillText(timeText, cursorX + 7, 19);
-                }
-              }
-              
-              function drawDrumLabels() {
-                // Clear labels canvas with light gray background
-                labelsCtx.fillStyle = '#E8E8E8';
-                labelsCtx.fillRect(0, 0, labelsCanvas.width, labelsCanvas.height);
-                
-                const numPitches = usedPitches.length; // 6 pitches
-                const pitchHeight = labelsCanvas.height / numPitches;
-                
-                // Draw alternating row backgrounds
-                usedPitches.forEach((pitch, index) => {
-                  if (index % 2 === 0) {
-                    const y = labelsCanvas.height - ((index + 1) * pitchHeight);
-                    labelsCtx.fillStyle = 'rgba(0, 0, 0, 0.03)';
-                    labelsCtx.fillRect(0, y, labelsCanvas.width, pitchHeight);
-                  }
-                });
-                
-                labelsCtx.font = 'bold 10px sans-serif';
-                labelsCtx.textAlign = 'right';
-                labelsCtx.textBaseline = 'middle';
-                
-                usedPitches.forEach((pitch, index) => {
-                  const y = labelsCanvas.height - ((index + 0.5) * pitchHeight);
-                  
-                  // Determine label text
-                  let label = drumNames[pitch] || `${pitch}`;
-                  
-                  // Draw subtle horizontal line
-                  labelsCtx.strokeStyle = 'rgba(40, 167, 69, 0.15)';
-                  labelsCtx.lineWidth = 0.5;
-                  labelsCtx.beginPath();
-                  labelsCtx.moveTo(0, y);
-                  labelsCtx.lineTo(labelsCanvas.width, y);
-                  labelsCtx.stroke();
-                  
-                  // Draw label text with subtle shadow for better readability
-                  labelsCtx.shadowBlur = 2;
-                  labelsCtx.shadowColor = 'rgba(255, 255, 255, 0.5)';
-                  labelsCtx.fillStyle = '#000000';
-                  labelsCtx.fillText(label, labelsCanvas.width - 4, y);
-                  labelsCtx.shadowBlur = 0;
-                });
-              }
-            })();
-          </script>
-          
-          <!-- <div class="field">
-            <div class="control">
-              <a href="static/1_funk-groove1_138_beat_4-4.mid" download class="button is-success is-fullwidth">
-                <span class="icon">
-                  <i class="fas fa-download"></i>
-                </span>
-                <span>Download MIDI</span>
-              </a>
-            </div>
-          </div> -->
         </div>
       </div>
     </div>
 
-    <h3 class="title is-4">Model Outputs Comparison</h3>
-    <div class="table-container">
-      <table class="table is-striped is-narrow is-hoverable is-fullwidth" style="table-layout: fixed;">
-        <colgroup>
-          <col style="width: 25%;">
-          <col style="width: 37.5%;">
-          <col style="width: 37.5%;">
-        </colgroup>
-        <thead>
-          <tr>
-            <th style="text-align: center;">Epoch</th>
-            <th style="text-align: center;">Baseline Model</th>
-            <th style="text-align: center;">MIDI-Conditioned Model</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="text-align: center; vertical-align: middle;"><strong>0 Epochs (Initial)</strong></td>
-            <td style="text-align: center; padding: 15px;">
-              <div id="waveform-baseline-0" style="margin-bottom: 10px;"></div>
-              <audio id="audio-baseline-0" controls style="width: 100%;">
-                <source src="static/baseline_model/epoch0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-                Your browser does not support the audio element.
+    <!-- Results Section -->
+    <div class="columns is-centered" style="margin-top: 3rem;">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Results</h2>
+        <div class="content">
+          <p>To quantitatively evaluate performance, we calculated standard audio quality metrics. The Frechet VGGish Score measures the similarity between distributions of embeddings from the generated audio and the ground truth clean audio. <strong>A lower score indicates higher similarity to the clean audio.</strong></p>
+        </div>
+        
+        <figure style="margin-top: 2rem;">
+          <div style="position: relative; width: 100%; height: 400px; margin: 20px 0;">
+            <div style="position: absolute; top: 10px; right: 10px; z-index: 10; background: white; padding: 8px 12px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e0e0e0;">
+              <label class="checkbox" style="margin: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; color: #4a4a4a;">
+                <input type="checkbox" id="logScaleToggle" onchange="toggleLogScale()" checked style="cursor: pointer;">
+                <span>Log Scale</span>
+              </label>
+            </div>
+            <canvas id="frechetChart"></canvas>
+          </div>
+          <figcaption>Figure 3: Interactive Frechet VGGish Score for Baseline vs. Midi Conditioned models. The Midi Conditioned model shows a consistently lower (better) score throughout the training process. Hover over points to see exact values.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- Model Outputs Comparison -->
+    <div class="columns is-centered" style="margin-top: 3rem;">
+      <div class="column is-four-fifths">
+        <h3 class="title is-4" style="text-align: left; margin-bottom: 2rem;">Model Outputs Comparison</h3>
+        
+        <!-- Baseline Model Section -->
+        <div style="background: linear-gradient(135deg, #fff5f5 0%, #ffe9e9 100%); padding: 2rem; border-radius: 16px; margin-bottom: 2.5rem; box-shadow: 0 4px 20px rgba(255, 99, 132, 0.1); border: 2px solid #ffd4d4;">
+          <h4 class="title is-5" style="margin-bottom: 0rem; color: #c92a2a; display: flex; align-items: center; gap: 10px;">
+            <span style="background: #ff6b6b; width: 8px; height: 24px; border-radius: 4px; display: inline-block;"></span>
+            Baseline Model
+          </h4>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: nowrap;">
+            <!-- Epoch 0 -->
+            <div class="epoch-card" style="background: white; border-radius: 8px; padding: 12px; width: 180px; min-width: 180px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
+              <div style="margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 0</div>
+              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 6px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 156px; -webkit-overflow-scrolling: touch;">
+                <img src="static/images/baseline_epoch=0_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 0" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio controls style="width: 100%; height: 32px;">
+                <source src="static/audio/baseline/epoch=0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
               </audio>
-            </td>
-            <td style="text-align: center; padding: 15px;">
-              <div id="waveform-ctc-0" style="margin-bottom: 10px;"></div>
-              <audio id="audio-ctc-0" controls style="width: 100%;">
-                <source src="static/ctc_loss/epoch0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-                Your browser does not support the audio element.
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; width: 30px;">
+              <span style="font-size: 2rem; background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; filter: drop-shadow(1px 1px 2px rgba(255, 107, 107, 0.3));">→</span>
+            </div>
+            <!-- Epoch 10 -->
+            <div class="epoch-card" style="background: white; border-radius: 8px; padding: 12px; width: 180px; min-width: 180px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
+              <div style="margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 10</div>
+              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 6px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 156px;">
+                <img src="static/images/baseline_epoch=10_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 10" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio controls style="width: 100%; height: 32px;">
+                <source src="static/audio/baseline/epoch=10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
               </audio>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: center; vertical-align: middle;"><strong>10 Epochs</strong></td>
-            <td style="text-align: center; padding: 15px;">
-              <div id="waveform-baseline-10" style="margin-bottom: 10px;"></div>
-              <audio id="audio-baseline-10" controls style="width: 100%;">
-                <source src="static/baseline_model/epoch10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-                Your browser does not support the audio element.
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; width: 30px;">
+              <span style="font-size: 2rem; background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; filter: drop-shadow(1px 1px 2px rgba(255, 107, 107, 0.3));">→</span>
+            </div>
+            <!-- Epoch 20 -->
+            <div class="epoch-card" style="background: white; border-radius: 8px; padding: 12px; width: 180px; min-width: 180px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
+              <div style="margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 20</div>
+              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 6px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 156px;">
+                <img src="static/images/baseline_epoch=20_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 20" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio controls style="width: 100%; height: 32px;">
+                <source src="static/audio/baseline/epoch=20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
               </audio>
-            </td>
-            <td style="text-align: center; padding: 15px;">
-              <div id="waveform-ctc-10" style="margin-bottom: 10px;"></div>
-              <audio id="audio-ctc-10" controls style="width: 100%;">
-                <source src="static/ctc_loss/epoch10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-                Your browser does not support the audio element.
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; width: 30px;">
+              <span style="font-size: 2rem; background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; filter: drop-shadow(1px 1px 2px rgba(255, 107, 107, 0.3));">→</span>
+            </div>
+            <!-- Epoch 30 -->
+            <div class="epoch-card" style="background: white; border-radius: 8px; padding: 12px; width: 180px; min-width: 180px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
+              <div style="margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 30</div>
+              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 6px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 156px;">
+                <img src="static/images/baseline_epoch=30_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 30" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio controls style="width: 100%; height: 32px;">
+                <source src="static/audio/baseline/epoch=30_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
               </audio>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: center; vertical-align: middle;"><strong>20 Epochs</strong></td>
-            <td style="text-align: center; padding: 15px;">
-              <div id="waveform-baseline-20" style="margin-bottom: 10px;"></div>
-              <audio id="audio-baseline-20" controls style="width: 100%;">
-                <source src="static/baseline_model/epoch20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-                Your browser does not support the audio element.
+            </div>
+          </div>
+        </div>
+
+        <!-- MIDI Conditioned Model Section -->
+        <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 2rem; border-radius: 16px; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(54, 162, 235, 0.1); border: 2px solid #bfdbfe;">
+          <h4 class="title is-5" style="margin-bottom: 0rem; color: #1e40af; display: flex; align-items: center; gap: 10px;">
+            <span style="background: #3b82f6; width: 8px; height: 24px; border-radius: 4px; display: inline-block;"></span>
+            MIDI Conditioned Model
+          </h4>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: nowrap;">
+            <!-- Epoch 0 -->
+            <div class="epoch-card" style="background: white; border-radius: 8px; padding: 12px; width: 180px; min-width: 180px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
+              <div style="margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 0</div>
+              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 6px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 156px;">
+                <img src="static/images/midi_epoch=0_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 0" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio controls style="width: 100%; height: 32px;">
+                <source src="static/audio/midi_conditioned/epoch=0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
               </audio>
-            </td>
-            <td style="text-align: center; padding: 15px;">
-              <div id="waveform-ctc-20" style="margin-bottom: 10px;"></div>
-              <audio id="audio-ctc-20" controls style="width: 100%;">
-                <source src="static/ctc_loss/epoch20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-                Your browser does not support the audio element.
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; width: 30px;">
+              <span style="font-size: 2rem; color: #3b82f6; font-weight: 600; text-shadow: 1px 1px 4px rgba(59, 130, 246, 0.4), 0 0 10px rgba(59, 130, 246, 0.2);">→</span>
+            </div>
+            <!-- Epoch 10 -->
+            <div class="epoch-card" style="background: white; border-radius: 8px; padding: 12px; width: 180px; min-width: 180px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
+              <div style="margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 10</div>
+              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 6px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 156px;">
+                <img src="static/images/midi_epoch=10_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 10" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio controls style="width: 100%; height: 32px;">
+                <source src="static/audio/midi_conditioned/epoch=10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
               </audio>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; width: 30px;">
+              <span style="font-size: 2rem; color: #3b82f6; font-weight: 600; text-shadow: 1px 1px 4px rgba(59, 130, 246, 0.4), 0 0 10px rgba(59, 130, 246, 0.2);">→</span>
+            </div>
+            <!-- Epoch 20 -->
+            <div class="epoch-card" style="background: white; border-radius: 8px; padding: 12px; width: 180px; min-width: 180px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
+              <div style="margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 20</div>
+              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 6px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 156px;">
+                <img src="static/images/midi_epoch=20_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 20" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio controls style="width: 100%; height: 32px;">
+                <source src="static/audio/midi_conditioned/epoch=20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
+              </audio>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; width: 30px;">
+              <span style="font-size: 2rem; color: #3b82f6; font-weight: 600; text-shadow: 1px 1px 4px rgba(59, 130, 246, 0.4), 0 0 10px rgba(59, 130, 246, 0.2);">→</span>
+            </div>
+            <!-- Epoch 30 -->
+            <div class="epoch-card" style="background: white; border-radius: 8px; padding: 12px; width: 180px; min-width: 180px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
+              <div style="margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 30</div>
+              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 6px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 156px;">
+                <img src="static/images/midi_epoch=30_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 30" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio controls style="width: 100%; height: 32px;">
+                <source src="static/audio/midi_conditioned/epoch=30_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
+              </audio>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="columns is-centered">
@@ -1585,8 +1360,8 @@ async function initChart() {
   try {
     console.log('Loading CSV files...');
     // Load both CSV files
-    const baselineData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_0.csv');
-    const ctcData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_1.csv');
+    const baselineData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_22.csv');
+    const ctcData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_20.csv');
     
     console.log('Baseline data:', baselineData.length, 'points');
     console.log('CTC data:', ctcData.length, 'points');
@@ -1604,7 +1379,7 @@ async function initChart() {
     const ctx = chartElement.getContext('2d');
     console.log('Canvas context:', ctx);
     
-    const chart = new Chart(ctx, {
+    window.frechetChart = new Chart(ctx, {
       type: 'line',
       data: {
         datasets: [{
@@ -1619,7 +1394,7 @@ async function initChart() {
           pointRadius: 4,
           pointHoverRadius: 6
         }, {
-          label: 'CTC Loss Model',
+          label: 'Midi Conditioned Model',
           data: ctcData.map(row => ({
             x: row.Step,
             y: row.Value
@@ -1643,6 +1418,7 @@ async function initChart() {
             }
           },
           y: {
+            type: 'logarithmic',
             title: {
               display: true,
               text: 'Frechet VGGish Score'
@@ -1676,11 +1452,20 @@ async function initChart() {
       }
     });
     
-    console.log('Chart created successfully:', chart);
+    console.log('Chart created successfully:', window.frechetChart);
   } catch (error) {
     console.error('Error loading chart data:', error);
     document.getElementById('frechetChart').parentElement.innerHTML = 
       '<p style="text-align: center; color: red;">Error loading chart data: ' + error.message + '</p>';
+  }
+}
+
+// Toggle logarithmic scale
+function toggleLogScale() {
+  const checkbox = document.getElementById('logScaleToggle');
+  if (window.frechetChart) {
+    window.frechetChart.options.scales.y.type = checkbox.checked ? 'logarithmic' : 'linear';
+    window.frechetChart.update();
   }
 }
 
@@ -1689,6 +1474,18 @@ document.addEventListener('DOMContentLoaded', initChart);
 </script>
 
 <style>
+  /* Arrow pulse animation */
+  @keyframes pulse-arrow {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
+
   /* MIDI Player Consistent Styling */
   midi-player {
     width: 100% !important;
@@ -1774,6 +1571,43 @@ document.addEventListener('DOMContentLoaded', initChart);
 </style>
 
 <script>
+// Drag-to-scroll functionality for spectrogram containers
+document.addEventListener('DOMContentLoaded', function() {
+  const spectrogramContainers = document.querySelectorAll('.spectrogram-scroll-container');
+  
+  spectrogramContainers.forEach(container => {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    
+    container.addEventListener('mousedown', (e) => {
+      isDown = true;
+      container.style.cursor = 'grabbing';
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+      e.preventDefault();
+    });
+    
+    container.addEventListener('mouseleave', () => {
+      isDown = false;
+      container.style.cursor = 'grab';
+    });
+    
+    container.addEventListener('mouseup', () => {
+      isDown = false;
+      container.style.cursor = 'grab';
+    });
+    
+    container.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 2; // Scroll speed multiplier
+      container.scrollLeft = scrollLeft - walk;
+    });
+  });
+});
+
 // Force MathJax to typeset when page loads
 document.addEventListener('DOMContentLoaded', function() {
   if (window.MathJax) {
