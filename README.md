@@ -1,4 +1,4 @@
-# MIDI-Conditioned Diffusion Models for Drum Audio Enhancement
+# MiDiff: MIDI-Conditioned Diffusion Models for Drum Audio Enhancement
 
 This repository contains the research page for our study on the efficacy of diffusion models for audio denoising, comparing a baseline diffusion model with an enhanced model incorporating Connectionist Temporal Classification (CTC) loss.
 
@@ -87,8 +87,7 @@ The page includes:
 │   │   ├── spec_noisy.png       # Noisy audio spectrogram
 │   │   └── overview.PNG         # Architecture overview
 │   ├── figures/                  # Architecture diagrams
-│   │   ├── MidiConditionEncoder.excalidraw.png
-│   │   └── FiLM_implementation.png
+│   │   ├── MidiConditioned.png
 │   ├── baseline_model/           # Baseline model audio outputs
 │   ├── ctc_loss/                # CTC model audio outputs
 │   ├── 1_funk-groove1_138_beat_4-4.mid  # MIDI reference file
@@ -102,7 +101,7 @@ If you use this work in your research, please cite:
 
 ```bibtex
 @misc{aspis2025diffusion,
-  title={MIDI-Conditioned Diffusion Models for Drum Audio Enhancement},
+  title={MiDiff: MIDI-Conditioned Diffusion Models for Drum Audio Enhancement},
   author={Elad Aspis},
   year={2025},
   institution={Bar Ilan University},
