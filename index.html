@@ -38,6 +38,45 @@
   <link rel="stylesheet" href="static/css/index.css">
 
   <style>
+    /* Publication-ready styling */
+    body {
+      font-family: 'Noto Sans', 'Google Sans', sans-serif;
+    }
+    
+    .publication-title {
+      font-family: 'Google Sans', 'Noto Sans', sans-serif;
+      font-weight: 600;
+    }
+    
+    .publication-authors {
+      margin-bottom: 0.5rem;
+    }
+    
+    .publication-authors a {
+      color: #363636;
+      text-decoration: none;
+    }
+    
+    .publication-authors a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Section spacing */
+    .section {
+      padding: 3rem 1.5rem;
+    }
+    
+    /* Figure styling */
+    figure {
+      margin: 1.5rem 0;
+    }
+    
+    figcaption {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 0.75rem;
+    }
+    
     /* Force scrollbars to always be visible on spectrogram containers */
     .spectrogram-scroll-container::-webkit-scrollbar {
       height: 12px;
@@ -62,6 +101,38 @@
     .epoch-card {
       width: 210px !important;
       min-width: 210px !important;
+    }
+    
+    /* Equation styling */
+    .equation-block {
+      background: #f8f9fa;
+      border-left: 4px solid #007bff;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      text-align: center;
+      font-size: 1.15rem;
+    }
+    
+    /* BibTeX styling */
+    #BibTeX pre {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+    
+    #BibTeX code {
+      font-size: 0.85rem;
+    }
+    
+    /* Footer styling */
+    .footer {
+      padding: 3rem 1.5rem;
+      background-color: #f5f5f5;
+    }
+    
+    .footer .content p {
+      margin-bottom: 0.5rem;
     }
   </style>
 
@@ -121,61 +192,50 @@
             <div class="is-size-5 publication-authors">
               <!-- Paper authors -->
               <span class="author-block">
-                <a href="#" target="_blank">Elad Aspis</a><sup>1</sup></span>,
-                <span class="author-block"><a href="#" target="_blank">Sharon Gannot</a><sup>1</sup></span>
-                  </div>
+                <a href="#" target="_blank">Elad Aspis</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#" target="_blank">Sharon Gannot</a><sup>1</sup>
+              </span>
+            </div>
 
-                  <div class="is-size-5 publication-authors">
-                    <span class="author-block"><sup>1</sup>Bar Ilan University
-                      <!-- Conferance name and year</span> -->
-                    <!-- <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span> -->
-                  </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Bar-Ilan University</span>
+            </div>
 
                   <div class="column has-text-centered">
                     <div class="publication-links">
-                      <!-- <span class="link-block">
-                        <a href="https://arxiv.org/pdf/<ARXIV PAPER ID>.pdf" target="_blank"
-                        class="external-link button is-normal is-rounded is-dark">
-                        <span class="icon">
-                          <i class="fas fa-file-pdf"></i>
-                        </span>
-                        <span>Paper</span>
-                      </a>
-                    </span> -->
-
-                    <!-- Supplementary PDF link -->
-                    <span class="link-block">
-                      <a href="#" target="_blank"
-                      class="external-link button is-normal is-rounded is-dark">
-                      <span class="icon">
-                        <i class="fas fa-file-pdf"></i>
+                      <!-- Paper link -->
+                      <span class="link-block">
+                        <a href="#" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                          <span class="icon">
+                            <i class="fas fa-file-pdf"></i>
+                          </span>
+                          <span>Paper</span>
+                        </a>
                       </span>
-                      <span>Paper</span>
-                    </a>
-                  </span>
 
-                  <!-- Github link -->
-                  <span class="link-block">
-                    <a href="#" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="fab fa-github"></i>
-                    </span>
-                    <span>Code</span>
-                  </a>
-                </span>
+                      <!-- Github link -->
+                      <span class="link-block">
+                        <a href="#" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                          <span class="icon">
+                            <i class="fab fa-github"></i>
+                          </span>
+                          <span>Code</span>
+                        </a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+        </section>
 
 <section class="section">
   <div class="container is-widescreen">
 
-    <!-- Abstract. -->
+    <!-- Abstract -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
@@ -210,9 +270,9 @@
           </div>
           <div class="column is-4" style="margin-top: 4rem;">
             <figure>
-              <img src="static/figures/MidiConditioned.png" alt="Residual Block with MIDI Conditioning via FiLM Layers" style="width: 100%;">
+              <img src="static/figures/residual_block.png" alt="MIDI-conditioned residual block incorporating FiLM layers" style="width: 100%;">
               <figcaption class="" style="text-align: center;">
-                <strong>Figure 1:</strong> Residual Block with MIDI Conditioning via FiLM Layers
+                <strong>Figure 1:</strong> MIDI-conditioned residual block incorporating FiLM layers. The MIDI Encoder extracts a latent representation from the raw piano roll input. A Temporal Alignment module then projects these features to match the temporal resolution of the specific U-Net block. Finally, FiLM layers use the aligned MIDI embeddings to modulate the intermediate spectral feature maps via affine transformations.
               </figcaption>
             </figure>
           </div>
@@ -335,7 +395,7 @@
           <div class="field">
             <div class="control">
               <audio id="audio-noisy" controls style="width: 100%; height: 40px;">
-                <source src="static/noisy_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
+                <source src="static/audio/drummer1_1_funk-groove1_138_beat_4-4_bluebird_noisy.wav" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
             </div>
@@ -711,144 +771,675 @@
             </div>
             <canvas id="frechetChart"></canvas>
           </div>
-          <figcaption style="text-align: center;"><strong>Figure 3:</strong> Interactive Frechet VGGish Score for Baseline vs. Midi Conditioned models.</figcaption>
+          <figcaption style="text-align: center;"><strong>Figure 3:</strong> Interactive Frechet VGGish Score vs. Epochs for Baseline vs. Midi Conditioned models.</figcaption>
         </figure>
+        
       </div>
     </div>
 
-    <h2 class="title is-3" style="margin-top: 3rem;">Audio Samples</h2>
-
-    <div class="columns is-centered">
-      <div class="column is-full" style="max-width: 1400px; padding: 0 2rem;">
-        <h3 class="title is-4" style="text-align: left; margin-bottom: 2rem;">Model Outputs Comparison</h3>
+    <div class="columns is-centered" style="margin-top: 3rem;">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Audio Samples</h2>
+        <p class="content has-text-justified" style="margin-bottom: 1.5rem;">Compare the audio outputs of our baseline model and MIDI-conditioned model across different training epochs. Use the interactive tool below to select any two outputs for side-by-side comparison.</p>
       </div>
     </div>
 
+    <!-- Interactive Epoch Comparison Tool -->
     <div class="columns is-centered">
-      <div class="column is-full" style="max-width: 1400px; padding: 0 2rem;">
-        <!-- Baseline Model Section -->
-        <div style="background: linear-gradient(135deg, #fff5f5 0%, #ffe9e9 100%); padding: 2rem; border-radius: 16px; margin-bottom: 2.5rem; box-shadow: 0 4px 20px rgba(255, 99, 132, 0.1); border: 2px solid #ffd4d4;">
-          <h4 class="title is-5" style="margin-bottom: 0rem; color: #c92a2a; display: flex; align-items: center; gap: 10px;">
-            <span style="background: #ff6b6b; width: 8px; height: 24px; border-radius: 4px; display: inline-block;"></span>
-            Baseline Model
+      <div class="column is-full" style="max-width: 1200px; padding: 0 2rem;">
+        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 1.5rem; border-radius: 12px; border: 2px solid #dee2e6;">
+          <h4 class="title is-5" style="margin-bottom: 1rem; color: #495057;">
+            <span class="icon" style="color: #3b82f6;"><i class="fas fa-sliders-h"></i></span>
+            Epoch Comparison Tool
           </h4>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
-            <!-- Epoch 0 -->
-            <div class="epoch-card" style="background: white; border-radius: 12px; padding: 16px; width: 280px; min-width: 260px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
-              <div style="margin-bottom: 12px; font-weight: 600; color: #495057; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 0</div>
-              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 248px; -webkit-overflow-scrolling: touch;">
-                <img src="static/images/baseline_epoch=0_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 0" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+          <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem;">Select any two model outputs to compare side-by-side. Scrolling is synchronized for easy comparison.</p>
+          
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <div style="flex: 1; min-width: 200px;">
+              <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block;">Left Spectrogram:</label>
+              <select id="epoch-compare-left" onchange="updateEpochComparison('left')" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem;">
+                <optgroup label="Baseline Model">
+                  <option value="baseline_0">Baseline - Epoch 0</option>
+                  <option value="baseline_10">Baseline - Epoch 10</option>
+                  <option value="baseline_20">Baseline - Epoch 20</option>
+                  <option value="baseline_30" selected>Baseline - Epoch 30</option>
+                  <option value="baseline_40">Baseline - Epoch 40</option>
+                  <option value="baseline_50">Baseline - Epoch 50</option>
+                </optgroup>
+                <optgroup label="MIDI Conditioned Model">
+                  <option value="midi_0">MIDI Cond. - Epoch 0</option>
+                  <option value="midi_10">MIDI Cond. - Epoch 10</option>
+                  <option value="midi_20">MIDI Cond. - Epoch 20</option>
+                  <option value="midi_30">MIDI Cond. - Epoch 30</option>
+                  <option value="midi_40">MIDI Cond. - Epoch 40</option>
+                  <option value="midi_50">MIDI Cond. - Epoch 50</option>
+                </optgroup>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block;">Right Spectrogram:</label>
+              <select id="epoch-compare-right" onchange="updateEpochComparison('right')" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem;">
+                <optgroup label="Baseline Model">
+                  <option value="baseline_0">Baseline - Epoch 0</option>
+                  <option value="baseline_10">Baseline - Epoch 10</option>
+                  <option value="baseline_20">Baseline - Epoch 20</option>
+                  <option value="baseline_30">Baseline - Epoch 30</option>
+                  <option value="baseline_40">Baseline - Epoch 40</option>
+                  <option value="baseline_50">Baseline - Epoch 50</option>
+                </optgroup>
+                <optgroup label="MIDI Conditioned Model">
+                  <option value="midi_0">MIDI Cond. - Epoch 0</option>
+                  <option value="midi_10">MIDI Cond. - Epoch 10</option>
+                  <option value="midi_20">MIDI Cond. - Epoch 20</option>
+                  <option value="midi_30" selected>MIDI Cond. - Epoch 30</option>
+                  <option value="midi_40">MIDI Cond. - Epoch 40</option>
+                  <option value="midi_50">MIDI Cond. - Epoch 50</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <!-- Left comparison panel -->
+            <div style="flex: 1; min-width: 300px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+              <div id="epoch-compare-left-label" style="text-align: center; font-weight: 600; margin-bottom: 8px; color: #c92a2a;">Baseline - Epoch 30</div>
+              <div id="epoch-compare-left-container" class="epoch-compare-sync-group" style="border: 2px solid #ff6b6b; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; height: 160px; cursor: grab;">
+                <img id="epoch-compare-left-img" src="static/images/baseline_epoch_30.png" alt="Left Comparison" class="epoch-compare-img" style="height: 156px; width: auto; display: inline-block; max-width: none;">
               </div>
-              <audio controls style="width: 100%; height: 36px;">
-                <source src="static/audio/baseline/epoch=0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
+              <audio id="epoch-compare-left-audio" controls style="width: 100%; height: 36px; margin-top: 8px;">
+                <source id="epoch-compare-left-audio-src" src="static/audio/baseline/version_83/enhancement/use_midi=False_epoch_30/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
               </audio>
             </div>
-            <div style="display: flex; align-items: center; justify-content: center; width: 60px;">
-              <span style="font-size: 3rem; background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; filter: drop-shadow(2px 2px 4px rgba(255, 107, 107, 0.3)); animation: pulse-arrow 2s ease-in-out infinite;">→</span>
-            </div>
-            <!-- Epoch 10 -->
-            <div class="epoch-card" style="background: white; border-radius: 12px; padding: 16px; width: 280px; min-width: 260px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
-              <div style="margin-bottom: 12px; font-weight: 600; color: #495057; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 10</div>
-              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 248px;">
-                <img src="static/images/baseline_epoch=10_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 10" style="height: 90px; width: auto; display: inline-block; max-width: none;">
+            
+            <!-- Right comparison panel -->
+            <div style="flex: 1; min-width: 300px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+              <div id="epoch-compare-right-label" style="text-align: center; font-weight: 600; margin-bottom: 8px; color: #1e40af;">MIDI Cond. - Epoch 30</div>
+              <div id="epoch-compare-right-container" class="epoch-compare-sync-group" style="border: 2px solid #3b82f6; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; height: 160px; cursor: grab;">
+                <img id="epoch-compare-right-img" src="static/images/midi_film_conditioned_epoch_30.png" alt="Right Comparison" class="epoch-compare-img" style="height: 156px; width: auto; display: inline-block; max-width: none;">
               </div>
-              <audio controls style="width: 100%; height: 36px;">
-                <source src="static/audio/baseline/epoch=10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-              </audio>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: center; width: 60px;">
-              <span style="font-size: 3rem; background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; filter: drop-shadow(2px 2px 4px rgba(255, 107, 107, 0.3)); animation: pulse-arrow 2s ease-in-out infinite;">→</span>
-            </div>
-            <!-- Epoch 20 -->
-            <div class="epoch-card" style="background: white; border-radius: 12px; padding: 16px; width: 280px; min-width: 260px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
-              <div style="margin-bottom: 12px; font-weight: 600; color: #495057; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 20</div>
-              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 248px;">
-                <img src="static/images/baseline_epoch=20_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 20" style="height: 90px; width: auto; display: inline-block; max-width: none;">
-              </div>
-              <audio controls style="width: 100%; height: 36px;">
-                <source src="static/audio/baseline/epoch=20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-              </audio>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: center; width: 60px;">
-              <span style="font-size: 3rem; background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; filter: drop-shadow(2px 2px 4px rgba(255, 107, 107, 0.3)); animation: pulse-arrow 2s ease-in-out infinite;">→</span>
-            </div>
-            <!-- Epoch 30 -->
-            <div class="epoch-card" style="background: white; border-radius: 12px; padding: 16px; width: 280px; min-width: 260px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
-              <div style="margin-bottom: 12px; font-weight: 600; color: #495057; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 30</div>
-              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 248px;">
-                <img src="static/images/baseline_epoch=30_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 30" style="height: 90px; width: auto; display: inline-block; max-width: none;">
-              </div>
-              <audio controls style="width: 100%; height: 36px;">
-                <source src="static/audio/baseline/epoch=30_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
+              <audio id="epoch-compare-right-audio" controls style="width: 100%; height: 36px; margin-top: 8px;">
+                <source id="epoch-compare-right-audio-src" src="static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_30/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
               </audio>
             </div>
           </div>
-        </div>
-
-        <!-- MIDI Conditioned Model Section -->
-        <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 2rem; border-radius: 16px; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(54, 162, 235, 0.1); border: 2px solid #bfdbfe;">
-          <h4 class="title is-5" style="margin-bottom: 0rem; color: #1e40af; display: flex; align-items: center; gap: 10px;">
-            <span style="background: #3b82f6; width: 8px; height: 24px; border-radius: 4px; display: inline-block;"></span>
-            MIDI Conditioned Model
-          </h4>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
-            <!-- Epoch 0 -->
-            <div class="epoch-card" style="background: white; border-radius: 12px; padding: 16px; width: 280px; min-width: 260px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
-              <div style="margin-bottom: 12px; font-weight: 600; color: #495057; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 0</div>
-              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 248px;">
-                <img src="static/images/midi_epoch=0_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 0" style="height: 90px; width: auto; display: inline-block; max-width: none;">
-              </div>
-              <audio controls style="width: 100%; height: 36px;">
-                <source src="static/audio/midi_conditioned/epoch=0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-              </audio>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: center; width: 60px;">
-              <span style="font-size: 3rem; color: #3b82f6; font-weight: 600; text-shadow: 2px 2px 8px rgba(59, 130, 246, 0.4), 0 0 20px rgba(59, 130, 246, 0.2);">→</span>
-            </div>
-            <!-- Epoch 10 -->
-            <div class="epoch-card" style="background: white; border-radius: 12px; padding: 16px; width: 280px; min-width: 260px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
-              <div style="margin-bottom: 12px; font-weight: 600; color: #495057; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 10</div>
-              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 248px;">
-                <img src="static/images/midi_epoch=10_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 10" style="height: 90px; width: auto; display: inline-block; max-width: none;">
-              </div>
-              <audio controls style="width: 100%; height: 36px;">
-                <source src="static/audio/midi_conditioned/epoch=10_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-              </audio>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: center; width: 60px;">
-              <span style="font-size: 3rem; color: #3b82f6; font-weight: 600; text-shadow: 2px 2px 8px rgba(59, 130, 246, 0.4), 0 0 20px rgba(59, 130, 246, 0.2);">→</span>
-            </div>
-            <!-- Epoch 20 -->
-            <div class="epoch-card" style="background: white; border-radius: 12px; padding: 16px; width: 280px; min-width: 260px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
-              <div style="margin-bottom: 12px; font-weight: 600; color: #495057; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 20</div>
-              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 248px;">
-                <img src="static/images/midi_epoch=20_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 20" style="height: 90px; width: auto; display: inline-block; max-width: none;">
-              </div>
-              <audio controls style="width: 100%; height: 36px;">
-                <source src="static/audio/midi_conditioned/epoch=20_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-              </audio>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: center; width: 60px;">
-              <span style="font-size: 3rem; color: #3b82f6; font-weight: 600; text-shadow: 2px 2px 8px rgba(59, 130, 246, 0.4), 0 0 20px rgba(59, 130, 246, 0.2);">→</span>
-            </div>
-            <!-- Epoch 30 -->
-            <div class="epoch-card" style="background: white; border-radius: 12px; padding: 16px; width: 280px; min-width: 260px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s;">
-              <div style="margin-bottom: 12px; font-weight: 600; color: #495057; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Epoch 30</div>
-              <div class="spectrogram-scroll-container" style="border: 2px solid #e9ecef; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 94px; cursor: grab; max-width: 248px;">
-                <img src="static/images/midi_epoch=30_10_soul-groove10_102_4-4_bluebird_v1_noisy.png" alt="Spectrogram Epoch 30" style="height: 90px; width: auto; display: inline-block; max-width: none;">
-              </div>
-              <audio controls style="width: 100%; height: 36px;">
-                <source src="static/audio/midi_conditioned/epoch=30_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav" type="audio/wav">
-              </audio>
+          
+          <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; align-items: center;">
+            <button id="epoch-compare-sync-btn" onclick="toggleEpochCompareSync()" style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">
+              <i class="fas fa-link"></i> Sync Scrolling: ON
+            </button>
+            
+            <div style="display: flex; align-items: center; gap: 8px; background: white; padding: 6px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+              <span style="font-weight: 600; font-size: 0.85rem; color: #495057;"><i class="fas fa-search"></i> Zoom:</span>
+              <button onclick="zoomEpochCompare(-0.25)" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">−</button>
+              <span id="epoch-compare-zoom-level" style="min-width: 50px; text-align: center; font-weight: 600; color: #495057;">100%</span>
+              <button onclick="zoomEpochCompare(0.25)" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">+</button>
+              <button onclick="resetEpochCompareZoom()" style="padding: 4px 10px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Reset</button>
             </div>
           </div>
+          
+          <p style="font-size: 0.8rem; color: #6c757d; text-align: center; margin-top: 0.75rem;"><i class="fas fa-info-circle"></i> Tip: Use mouse wheel while holding <kbd style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; border: 1px solid #ced4da;">Ctrl</kbd> to zoom, or scroll horizontally to pan.</p>
         </div>
+
       </div>
     </div>
 
+    <script>
+    // Epoch Comparison Tool Data
+    const epochCompareData = {
+      baseline_0: {
+        label: 'Baseline - Epoch 0',
+        img: 'static/images/baseline_epoch_0.png',
+        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_0/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#c92a2a',
+        borderColor: '#ff6b6b'
+      },
+      baseline_10: {
+        label: 'Baseline - Epoch 10',
+        img: 'static/images/baseline_epoch_10.png',
+        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_10/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#c92a2a',
+        borderColor: '#ff6b6b'
+      },
+      baseline_20: {
+        label: 'Baseline - Epoch 20',
+        img: 'static/images/baseline_epoch_20.png',
+        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_20/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#c92a2a',
+        borderColor: '#ff6b6b'
+      },
+      baseline_30: {
+        label: 'Baseline - Epoch 30',
+        img: 'static/images/baseline_epoch_30.png',
+        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_30/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#c92a2a',
+        borderColor: '#ff6b6b'
+      },
+      baseline_40: {
+        label: 'Baseline - Epoch 40',
+        img: 'static/images/baseline_epoch_40.png',
+        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_40/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#c92a2a',
+        borderColor: '#ff6b6b'
+      },
+      baseline_50: {
+        label: 'Baseline - Epoch 50',
+        img: 'static/images/baseline_epoch_50.png',
+        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_50/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#c92a2a',
+        borderColor: '#ff6b6b'
+      },
+      midi_0: {
+        label: 'MIDI Cond. - Epoch 0',
+        img: 'static/images/midi_film_conditioned_epoch_0.png',
+        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_0/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#1e40af',
+        borderColor: '#3b82f6'
+      },
+      midi_10: {
+        label: 'MIDI Cond. - Epoch 10',
+        img: 'static/images/midi_film_conditioned_epoch_10.png',
+        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_10/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#1e40af',
+        borderColor: '#3b82f6'
+      },
+      midi_20: {
+        label: 'MIDI Cond. - Epoch 20',
+        img: 'static/images/midi_film_conditioned_epoch_20.png',
+        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_20/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#1e40af',
+        borderColor: '#3b82f6'
+      },
+      midi_30: {
+        label: 'MIDI Cond. - Epoch 30',
+        img: 'static/images/midi_film_conditioned_epoch_30.png',
+        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_30/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#1e40af',
+        borderColor: '#3b82f6'
+      },
+      midi_40: {
+        label: 'MIDI Cond. - Epoch 40',
+        img: 'static/images/midi_film_conditioned_epoch_40.png',
+        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_40/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#1e40af',
+        borderColor: '#3b82f6'
+      },
+      midi_50: {
+        label: 'MIDI Cond. - Epoch 50',
+        img: 'static/images/midi_film_conditioned_epoch_50.png',
+        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_50/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+        color: '#1e40af',
+        borderColor: '#3b82f6'
+      }
+    };
+
+    let epochCompareSyncEnabled = true;
+    let epochCompareZoomLevel = 1.0;
+    const EPOCH_COMPARE_MIN_ZOOM = 1.0;
+    const EPOCH_COMPARE_MAX_ZOOM = 4.0;
+
+    function updateEpochComparison(side) {
+      const selectId = `epoch-compare-${side}`;
+      const select = document.getElementById(selectId);
+      const value = select.value;
+      const data = epochCompareData[value];
+      
+      if (data) {
+        document.getElementById(`epoch-compare-${side}-label`).textContent = data.label;
+        document.getElementById(`epoch-compare-${side}-label`).style.color = data.color;
+        document.getElementById(`epoch-compare-${side}-img`).src = data.img;
+        document.getElementById(`epoch-compare-${side}-container`).style.borderColor = data.borderColor;
+        
+        const audio = document.getElementById(`epoch-compare-${side}-audio`);
+        const audioSrc = document.getElementById(`epoch-compare-${side}-audio-src`);
+        audioSrc.src = data.audio;
+        audio.load();
+      }
+    }
+
+    function toggleEpochCompareSync() {
+      epochCompareSyncEnabled = !epochCompareSyncEnabled;
+      const btn = document.getElementById('epoch-compare-sync-btn');
+      if (epochCompareSyncEnabled) {
+        btn.innerHTML = '<i class="fas fa-link"></i> Sync Scrolling: ON';
+        btn.style.background = '#3b82f6';
+      } else {
+        btn.innerHTML = '<i class="fas fa-unlink"></i> Sync Scrolling: OFF';
+        btn.style.background = '#6c757d';
+      }
+    }
+
+    function zoomEpochCompare(delta) {
+      epochCompareZoomLevel = Math.max(EPOCH_COMPARE_MIN_ZOOM, Math.min(EPOCH_COMPARE_MAX_ZOOM, epochCompareZoomLevel + delta));
+      applyEpochCompareZoom();
+    }
+
+    function resetEpochCompareZoom() {
+      epochCompareZoomLevel = 1.0;
+      applyEpochCompareZoom();
+    }
+
+    function applyEpochCompareZoom() {
+      document.getElementById('epoch-compare-zoom-level').textContent = Math.round(epochCompareZoomLevel * 100) + '%';
+      
+      document.querySelectorAll('.epoch-compare-img').forEach(img => {
+        img.style.height = (156 * epochCompareZoomLevel) + 'px';
+      });
+      
+      document.querySelectorAll('.epoch-compare-sync-group').forEach(container => {
+        container.style.height = (160 * epochCompareZoomLevel) + 'px';
+      });
+    }
+
+    // Setup synchronized scrolling for epoch comparison tool
+    document.addEventListener('DOMContentLoaded', function() {
+      const epochCompareContainers = document.querySelectorAll('.epoch-compare-sync-group');
+      let isEpochCompareScrolling = false;
+
+      epochCompareContainers.forEach(container => {
+        container.addEventListener('scroll', function() {
+          if (!epochCompareSyncEnabled || isEpochCompareScrolling) return;
+          isEpochCompareScrolling = true;
+          
+          const scrollRatio = this.scrollLeft / Math.max(1, this.scrollWidth - this.clientWidth);
+          
+          epochCompareContainers.forEach(other => {
+            if (other !== this) {
+              const maxScroll = other.scrollWidth - other.clientWidth;
+              other.scrollLeft = scrollRatio * maxScroll;
+            }
+          });
+          
+          setTimeout(() => { isEpochCompareScrolling = false; }, 10);
+        });
+
+        // Drag to scroll
+        let isDragging = false;
+        let startX, scrollLeft;
+
+        container.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          container.style.cursor = 'grabbing';
+          startX = e.pageX - container.offsetLeft;
+          scrollLeft = container.scrollLeft;
+        });
+
+        container.addEventListener('mouseleave', () => {
+          isDragging = false;
+          container.style.cursor = 'grab';
+        });
+
+        container.addEventListener('mouseup', () => {
+          isDragging = false;
+          container.style.cursor = 'grab';
+        });
+
+        container.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          e.preventDefault();
+          const x = e.pageX - container.offsetLeft;
+          const walk = (x - startX) * 1.5;
+          container.scrollLeft = scrollLeft - walk;
+        });
+
+        // Ctrl + wheel to zoom
+        container.addEventListener('wheel', function(e) {
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            zoomEpochCompare(delta);
+          }
+        }, { passive: false });
+      });
+    });
+    </script>
+          
     <div class="columns is-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Conclusion</h2>
+        <div class="content has-text-justified" style="margin: 1rem 0 1.5rem 0;">
+          
+          <!-- Classifier-Free Guidance Section -->
+          <h2 class="title is-3">Classifier-Free Guidance</h2>
+          <p>
+            Classifier-Free Guidance (CFG) is a technique that controls the strength of conditioning during inference by interpolating between conditional and unconditional predictions. The guidance scale \(w\) determines how strongly the model follows the MIDI Conditioning.
+          </p>
+          
+          <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 2px solid #c084fc;">
+            <h5 class="title is-6" style="margin-bottom: 1rem; color: #7c3aed;">
+              <span class="icon" style="color: #9333ea;"><i class="fas fa-sliders-h"></i></span>
+              Interactive CFG Player
+            </h5>
+            
+            <!-- Slider Control -->
+            <div style="background: white; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+              <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <label style="font-weight: 600; color: #495057; min-width: 120px;">Guidance Scale:</label>
+                <div style="flex: 1; min-width: 250px; position: relative;">
+                  <input type="range" id="cfg-slider" min="0" max="3" step="0.1" value="1.0" 
+                         style="width: 100%; height: 8px; cursor: pointer; accent-color: #9333ea;">
+                  <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 0.75rem; color: #6c757d; position: relative;">
+                    <span style="position: absolute; left: 0;">\(w=0\)</span>
+                    <span style="position: absolute; left: 33%; transform: translateX(-50%);">\(w=1\)</span>
+                    <span style="position: absolute; left: 66%; transform: translateX(-50%);">\(w=2\)</span>
+                    <span style="position: absolute; left: 99%; transform: translateX(-50%);">\(w=3\)</span>
+
+
+                  </div>
+                  <!-- Tick marks for available files -->
+                  <div style="position: absolute; top: 0; left: 0; right: 0; height: 8px; pointer-events: none;">
+                    <div style="position: absolute; left: 0%; width: 2px; height: 12px; background: #e74c3c; top: -2px;" title="Baseline (w=0)"></div>
+                    <div style="position: absolute; left: 33.33%; width: 2px; height: 12px; background: #27ae60; transform: translateX(-50%); top: -2px;" title="w=1"></div>
+                    <div style="position: absolute; left: 66.66%; width: 2px; height: 12px; background: #3498db; transform: translateX(-50%); top: -2px;" title="w=2"></div>
+                    <div style="position: absolute; left: 100%; width: 2px; height: 12px; background: #9333ea; transform: translateX(-100%); top: -2px;" title="w=3"></div>
+                  </div>
+                </div>
+                <div id="cfg-value-display" style="min-width: 80px; text-align: center; padding: 8px 16px; background: #27ae60; color: white; border-radius: 20px; font-weight: 700; font-size: 1.1rem;">
+                  \(w = 1\)
+                </div>
+              </div>
+              <p style="font-size: 0.75rem; color: #9333ea; margin-top: 0.75rem; text-align: center;">
+                <i class="fas fa-music"></i> Available samples at: <strong>(w=0) (Midiff) </strong>, <strong>\(w=1\)</strong>, <strong>\(w=2\)</strong>, <strong>\(w=3\)</strong>
+              </p>
+            </div>
+            
+            <!-- Spectrogram Display -->
+            <div style="background: white; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+              <div id="cfg-spectrogram-container" style="border: 2px solid #c084fc; border-radius: 8px; overflow: hidden; background: #1a1a2e;">
+                <img id="cfg-spectrogram-img" src="static/images/cfg_w_1.0.png" alt="CFG Spectrogram" style="width: 100%; height: auto; display: block;">
+              </div>
+              <div id="cfg-spectrogram-label" style="text-align: center; margin-top: 0.5rem; font-weight: 600; color: #27ae60;">
+                Spectrogram: \(w = 1\)
+              </div>
+            </div>
+            
+            <!-- Audio Player Container with preloaded audio elements -->
+            <div style="background: white; border-radius: 10px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+              <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div id="cfg-audio-container" style="flex: 1; min-width: 250px;">
+                  <!-- Preloaded audio elements - only one visible at a time -->
+                  <audio id="cfg-audio-0" preload="auto" style="width: 100%; height: 50px; display: none;">
+                    <source src="static/audio/baseline/version_83/enhancement/use_midi=False_epoch_50/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
+                  </audio>
+                  <audio id="cfg-audio-1" controls preload="auto" style="width: 100%; height: 50px;">
+                    <source src="static/audio/midi_conditioned/cfg/w_1.0/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
+                  </audio>
+                  <audio id="cfg-audio-2" preload="auto" style="width: 100%; height: 50px; display: none;">
+                    <source src="static/audio/midi_conditioned/cfg/w_2.0/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
+                  </audio>
+                  <audio id="cfg-audio-3" preload="auto" style="width: 100%; height: 50px; display: none;">
+                    <source src="static/audio/midi_conditioned/cfg/w_3.0/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
+                  </audio>
+                </div>
+                <div id="cfg-description" style="min-width: 200px; padding: 10px 15px; background: #f0fdf4; border-left: 4px solid #27ae60; border-radius: 4px; font-size: 0.9rem;">
+                  <strong style="color: #27ae60;">Standard Conditioning</strong><br>
+                  <span style="color: #6c757d;">Normal MIDI conditioning strength</span>
+                </div>
+              </div>
+            </div>
+            
+            <p style="font-size: 0.85rem; color: #6c757d; margin-top: 1rem; text-align: center;">
+              <i class="fas fa-bolt"></i> Instant switching! All audio files are preloaded for seamless comparison.
+            </p>
+          </div>
+          
+          <script>
+          (function() {
+            // CFG configurations
+            const cfgConfigs = {
+              0: { label: 'Baseline', spec: 'static/images/cfg_baseline.png', audioId: 'cfg-audio-0' },
+              1: { label: '\\(w = 1\\)', spec: 'static/images/cfg_w_1.0.png', audioId: 'cfg-audio-1' },
+              2: { label: '\\(w = 2\\)', spec: 'static/images/cfg_w_2.0.png', audioId: 'cfg-audio-2' },
+              3: { label: '\\(w = 3\\)', spec: 'static/images/cfg_w_3.0.png', audioId: 'cfg-audio-3' }
+            };
+            
+            const availableW = [0, 1, 2, 3];
+            
+            function getColorForW(w) {
+              if (w === 0) return '#e74c3c';
+              if (w <= 1.5) return '#27ae60';
+              if (w <= 2.5) return '#3498db';
+              return '#9333ea';
+            }
+            
+            function getBgColorForW(w) {
+              if (w === 0) return '#fef2f2';
+              if (w <= 1.5) return '#f0fdf4';
+              if (w <= 2.5) return '#eff6ff';
+              return '#faf5ff';
+            }
+            
+            function getDescriptionForW(w) {
+              if (w === 0) return { title: 'No MIDI Conditioning', desc: 'Baseline model without MIDI input' };
+              if (w <= 1.5) return { title: 'Standard Conditioning', desc: 'Normal MIDI conditioning strength' };
+              if (w <= 2.5) return { title: 'Strong Conditioning', desc: 'Amplified MIDI conditioning' };
+              return { title: 'Maximum Conditioning', desc: 'Highly amplified MIDI conditioning' };
+            }
+            
+            function findClosestW(targetW) {
+              let closest = availableW[0];
+              let minDiff = Math.abs(targetW - closest);
+              for (const w of availableW) {
+                const diff = Math.abs(targetW - w);
+                if (diff < minDiff) {
+                  minDiff = diff;
+                  closest = w;
+                }
+              }
+              return closest;
+            }
+            
+            const slider = document.getElementById('cfg-slider');
+            const valueDisplay = document.getElementById('cfg-value-display');
+            const description = document.getElementById('cfg-description');
+            const spectrogramImg = document.getElementById('cfg-spectrogram-img');
+            const spectrogramLabel = document.getElementById('cfg-spectrogram-label');
+            
+            // Get all audio elements
+            const audioElements = {};
+            for (const w of availableW) {
+              audioElements[w] = document.getElementById(cfgConfigs[w].audioId);
+            }
+            
+            let currentW = 1; // Start at w=1.0
+            let activeAudio = audioElements[1];
+            
+            // Force all audio elements to load immediately
+            for (const w of availableW) {
+              audioElements[w].load();
+            }
+            
+            slider.addEventListener('input', function() {
+              const sliderW = parseFloat(this.value);
+              const closestW = findClosestW(sliderW);
+              const config = cfgConfigs[closestW];
+              const color = getColorForW(sliderW);
+              const bgColor = getBgColorForW(sliderW);
+              const descInfo = getDescriptionForW(sliderW);
+              
+              // Update display with actual slider value (LaTeX)
+              valueDisplay.innerHTML = sliderW === 0 ? 'Baseline' : `\\(w = ${sliderW.toFixed(1)}\\)`;
+              valueDisplay.style.background = color;
+              if (window.MathJax) MathJax.typeset([valueDisplay]);
+              
+              // Update description
+              description.style.background = bgColor;
+              description.style.borderLeftColor = color;
+              description.innerHTML = `<strong style="color: ${color};">${descInfo.title}</strong><br><span style="color: #6c757d;">${descInfo.desc}</span>`;
+              
+              // Update spectrogram label (LaTeX)
+              spectrogramLabel.innerHTML = `Spectrogram: ${config.label}`;
+              spectrogramLabel.style.color = color;
+              if (window.MathJax) MathJax.typeset([spectrogramLabel]);
+              
+              // Only switch audio if we're at a different w value
+              if (closestW !== currentW) {
+                const wasPlaying = !activeAudio.paused;
+                const savedTime = activeAudio.currentTime;
+                
+                // Pause old audio but remember its time
+                activeAudio.pause();
+                activeAudio.style.display = 'none';
+                activeAudio.removeAttribute('controls');
+                
+                // Switch to new audio
+                const newAudio = audioElements[closestW];
+                newAudio.style.display = 'block';
+                newAudio.setAttribute('controls', 'controls');
+                
+                // Update spectrogram
+                spectrogramImg.src = config.spec;
+                
+                // Set time on new audio - wrapped in try/catch and using a small delay
+                setTimeout(() => {
+                  newAudio.currentTime = savedTime;
+                  if (wasPlaying) {
+                    newAudio.play().catch(() => {});
+                  }
+                }, 50);
+                
+                activeAudio = newAudio;
+                currentW = closestW;
+              }
+            });
+            
+            // Snap to nearest available config on mouse up
+            slider.addEventListener('change', function() {
+              const sliderW = parseFloat(this.value);
+              const closestW = findClosestW(sliderW);
+              this.value = closestW;
+              
+              // Trigger input event to update display
+              this.dispatchEvent(new Event('input'));
+            });
+          })();
+          </script>
+          
+          <!-- CFG Video Comparison -->
+          <div style="background: white; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <h5 class="title is-6" style="margin-bottom: 1rem; color: #7c3aed;">
+              <span class="icon" style="color: #9333ea;"><i class="fas fa-video"></i></span>
+              CFG Comparison Video
+            </h5>
+            <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem;">
+              Watch how different guidance scales affect the audio enhancement. The active section is highlighted while others are dimmed.
+            </p>
+            <div style="border: 2px solid #c084fc; border-radius: 8px; overflow: hidden; background: #1a1a2e;">
+              <video controls style="width: 100%; display: block;" preload="metadata">
+                <source src="cfg_composite_analysis_16k.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div style="display: flex; justify-content: space-around; margin-top: 0.75rem; font-size: 0.8rem; color: #6c757d;">
+              <span><strong style="color: #e74c3c;">●</strong> Baseline (0-2.5s)</span>
+              <span><strong style="color: #27ae60;">●</strong> w=1 (2.5-5s)</span>
+              <span><strong style="color: #3498db;">●</strong> w=2 (5-7.5s)</span>
+              <span><strong style="color: #9333ea;">●</strong> w=3 (7.5-10s)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+          
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <div class="content has-text-justified" style="margin: 1rem 0 1.5rem 0;">
+          <h2 class="title is-3">Ablation Studies</h2>
+          
+          <!-- Impact of MIDI Velocity Information -->
+          <h3 class="title is-4">Impact of MIDI Velocity Information</h3>
+          <p>
+            To assess the impact of MIDI velocity information on model performance, we conducted an ablation study comparing two variants of our MIDI-conditioned diffusion model: one utilizing full MIDI data including velocity, and another using MIDI data with velocity information removed (i.e., all note velocities set to a constant value).
+          </p>
+          <figure style="margin-top: 1.25rem;">
+            <div style="position: relative; width: 100%; height: 380px; margin: 12px 0;">
+              <canvas id="velocityAblationChart"></canvas>
+            </div>
+            <figcaption style="text-align: center;">
+              <strong>Figure 4:</strong> Ablation study on velocity representation showing FAD scores for different configurations.
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- Spectrogram Comparison Tool -->
+        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; border: 2px solid #dee2e6;">
+          <h5 class="title is-6" style="margin-bottom: 1rem; color: #495057;">
+            <span class="icon" style="color: #3b82f6;"><i class="fas fa-sliders-h"></i></span>
+            Spectrogram Comparison Tool
+          </h5>
+          <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem;">Select two spectrograms to compare side-by-side. Scrolling is synchronized for easy comparison.</p>
+          
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <div style="flex: 1; min-width: 200px;">
+              <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block;">Left Spectrogram:</label>
+              <select id="compare-left" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem;">
+                <option value="midiff">MiDiff (Full MIDI)</option>
+                <option value="v0">Velocity 0</option>
+                <option value="v1">Velocity 1</option>
+                <option value="v20">Velocity 20</option>
+                <option value="v40">Velocity 40</option>
+                <option value="v60">Velocity 60</option>
+                <option value="v80">Velocity 80</option>
+                <option value="v100">Velocity 100</option>
+                <option value="v127" selected>Velocity 127</option>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block;">Right Spectrogram:</label>
+              <select id="compare-right" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem;">
+                <option value="midiff" selected>MiDiff (Full MIDI)</option>
+                <option value="v0">Velocity 0</option>
+                <option value="v1">Velocity 1</option>
+                <option value="v20">Velocity 20</option>
+                <option value="v40">Velocity 40</option>
+                <option value="v60">Velocity 60</option>
+                <option value="v80">Velocity 80</option>
+                <option value="v100">Velocity 100</option>
+                <option value="v127">Velocity 127</option>
+              </select>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <!-- Left comparison panel -->
+            <div style="flex: 1; min-width: 300px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+              <div id="compare-left-label" style="text-align: center; font-weight: 600; margin-bottom: 8px; color: #1e40af;">Velocity 127</div>
+              <div id="compare-left-container" class="spectrogram-scroll-container compare-sync-group" style="border: 2px solid #3b82f6; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; height: 140px; cursor: grab;">
+                <img id="compare-left-img" src="static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v127.png" alt="Left Comparison" style="height: 136px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio id="compare-left-audio" controls style="width: 100%; height: 36px; margin-top: 8px;">
+                <source id="compare-left-audio-src" src="static/audio/midi_conditioned/constant_velocity/v=127/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v127.wav" type="audio/wav">
+              </audio>
+            </div>
+            
+            <!-- Right comparison panel -->
+            <div style="flex: 1; min-width: 300px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+              <div id="compare-right-label" style="text-align: center; font-weight: 600; margin-bottom: 8px; color: #27ae60;">MiDiff (Full MIDI)</div>
+              <div id="compare-right-container" class="spectrogram-scroll-container compare-sync-group" style="border: 2px solid #27ae60; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; height: 140px; cursor: grab;">
+                <img id="compare-right-img" src="static/images/midi_film_conditioned_epoch_50.png" alt="Right Comparison" style="height: 136px; width: auto; display: inline-block; max-width: none;">
+              </div>
+              <audio id="compare-right-audio" controls style="width: 100%; height: 36px; margin-top: 8px;">
+                <source id="compare-right-audio-src" src="static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_50/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
+              </audio>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; align-items: center;">
+            <button id="sync-scroll-btn" onclick="toggleSyncScroll()" style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">
+              <i class="fas fa-link"></i> Sync Scrolling: ON
+            </button>
+            
+            <div style="display: flex; align-items: center; gap: 8px; background: white; padding: 6px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+              <span style="font-weight: 600; font-size: 0.85rem; color: #495057;"><i class="fas fa-search"></i> Zoom:</span>
+              <button onclick="zoomSpectrogram(-0.25)" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">−</button>
+              <span id="zoom-level" style="min-width: 50px; text-align: center; font-weight: 600; color: #495057;">100%</span>
+              <button onclick="zoomSpectrogram(0.25)" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">+</button>
+              <button onclick="resetZoom()" style="padding: 4px 10px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Reset</button>
+            </div>
+          </div>
+          
+          <p style="font-size: 0.8rem; color: #6c757d; text-align: center; margin-top: 0.75rem;"><i class="fas fa-info-circle"></i> Tip: Use mouse wheel while holding <kbd style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; border: 1px solid #ced4da;">Ctrl</kbd> to zoom, or scroll horizontally to pan.</p>
+        </div>
+
+        <h2 class="title is-3" style="margin-top: 2rem;">Conclusion</h2>
         <div class="content has-text-justified">
           <p>
             We presented a MIDI-conditioned diffusion model for drum audio enhancement that extends SGMSE with Feature-wise Linear Modulation (FiLM) layers. By incorporating symbolic musical information through a MIDI encoder, our model makes musically-informed enhancement decisions that preserve rhythmic structure and drum timbre. The results demonstrate that the CTC loss-enhanced model achieves consistently lower Frechet VGGish Scores compared to the baseline, with perceptual evaluation confirming superior denoising quality. This work validates the effectiveness of MIDI conditioning for audio enhancement and opens promising directions for extending this approach to other instruments, multi-track scenarios, and real-time applications.
@@ -860,24 +1451,27 @@
 </section>
 
 
-<!--BibTex citation -->
-  <!-- <section class="section" id="BibTeX">
+<section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
       <h2 class="title">BibTeX</h2>
-      <pre><code>BibTex Code Here</code></pre>
+    <pre><code>@article{aspis2025midiff,
+      author    = {Aspis, Elad and Gannot, Sharon},
+      title     = {MiDiff: MIDI-Conditioned Diffusion Models for Drum Audio Enhancement},
+      journal   = {TBD},
+      year      = {2025},
+    }</code></pre>
     </div>
-</section> -->
-<!--End BibTex citation -->
+</section>
 
 
 <footer class="footer">
   <div class="container">
     <div class="content has-text-centered">
-      <a class="icon-link" href="#" class="external-link" disabled>
-        <i class="fas fa-file-pdf"></i>
+      <a class="icon-link" href="#" style="margin: 0 10px;">
+        <i class="fas fa-file-pdf fa-lg"></i>
       </a>
-      <a class="icon-link" href="#" class="external-link" disabled>
-        <i class="fab fa-github"></i>
+      <a class="icon-link" href="#" style="margin: 0 10px;">
+        <i class="fab fa-github fa-lg"></i>
       </a>
     </div>
     <div class="columns is-centered">
@@ -1024,12 +1618,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-
-<script>
-// Spectrogram functionality removed - keeping only audio players
-console.log('Audio players initialized without spectrogram visualization');
-</script>
-
 <script>
 // Function to load CSV data
 async function loadCSV(url) {
@@ -1050,623 +1638,6 @@ async function loadCSV(url) {
   return data;
 }
 
-// Initialize the chart
-async function initChart() {
-    const N = frameData.length;
-    const magnitudes = new Float32Array(N / 2);
-    
-    // Ultra-fast DFT - only calculate every 2nd frequency bin and interpolate
-    for (let k = 0; k < N / 2; k += 2) {
-      let real = 0;
-      let imag = 0;
-      
-      // Sample every 8th point for maximum speed
-      for (let n = 0; n < N; n += 8) {
-        const angle = -2 * Math.PI * k * n / N;
-        real += frameData[n] * Math.cos(angle);
-        imag += frameData[n] * Math.sin(angle);
-      }
-      
-      const magnitude = Math.sqrt(real * real + imag * imag);
-      magnitudes[k] = magnitude;
-      
-      // Simple interpolation for skipped bin
-      if (k + 1 < N / 2) {
-        magnitudes[k + 1] = magnitude * 0.8; // Approximate
-      }
-    }
-    
-    return magnitudes;
-  }
-
-  // Adobe Audition color mapping (optimized)
-  getAdobeAuditionColor(dbValue) {
-    const minDb = -80;
-    const maxDb = -10;
-    const normalized = Math.max(0, Math.min(1, (dbValue - minDb) / (maxDb - minDb)));
-    
-    let r, g, b;
-    
-    if (normalized <= 0.05) {
-      // Almost black for very low values
-      r = g = b = Math.floor(normalized * 200);
-    } else if (normalized < 0.2) {
-      // Dark blue
-      const t = (normalized - 0.05) / 0.15;
-      r = 0;
-      g = Math.floor(t * 30);
-      b = Math.floor(60 + t * 140);
-    } else if (normalized < 0.4) {
-      // Blue to purple
-      const t = (normalized - 0.2) / 0.2;
-      r = Math.floor(t * 120);
-      g = Math.floor(30 + t * 20);
-      b = Math.floor(200 + t * 55);
-    } else if (normalized < 0.6) {
-      // Purple to magenta
-      const t = (normalized - 0.4) / 0.2;
-      r = Math.floor(120 + t * 135);
-      g = Math.floor(50 - t * 30);
-      b = Math.floor(255 - t * 100);
-    } else if (normalized < 0.8) {
-      // Magenta to red/orange
-      const t = (normalized - 0.6) / 0.2;
-      r = 255;
-      g = Math.floor(20 + t * 100);
-      b = Math.floor(155 - t * 155);
-    } else {
-      // Orange to yellow
-      const t = (normalized - 0.8) / 0.2;
-      r = 255;
-      g = Math.floor(120 + t * 135);
-      b = Math.floor(t * 80);
-    }
-    
-    return [Math.min(255, r), Math.min(255, g), Math.min(255, b)];
-  }
-
-  // Optimized spectrogram generation
-  async generateSpectrogram(audioBuffer, canvasId) {
-    try {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) {
-        console.error(`Canvas ${canvasId} not found`);
-        return;
-      }
-
-      const ctx = canvas.getContext('2d');
-      const channelData = audioBuffer.getChannelData(0);
-      const sampleRate = audioBuffer.sampleRate;
-      
-      console.log(`Generating clean spectrogram for ${canvasId}`);
-      console.log(`Audio: ${channelData.length} samples, ${sampleRate}Hz`);
-      
-      // Set fixed canvas dimensions to prevent scaling issues
-      const width = 800;
-      const height = 300;
-      
-      // Set canvas internal dimensions exactly
-      canvas.width = width;
-      canvas.height = height;
-      
-      // Set CSS to match exactly - no scaling
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      canvas.style.maxWidth = 'none';
-      canvas.style.display = 'block';
-      canvas.style.imageRendering = 'pixelated';
-      
-      // Clear the canvas completely first
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, width, height);
-      
-      // Update internal dimensions for rendering
-      this.scrollViewWidth = width;
-      this.scrollViewHeight = height;
-
-      // Calculate high-resolution parameters
-      const framesPerSecond = sampleRate / this.hopSize;
-      const totalFrames = Math.floor((channelData.length - this.fftSize) / this.hopSize) + 1;
-      const totalDuration = totalFrames / framesPerSecond;
-      const frequencyBins = this.fftSize / 2;
-      
-      console.log(`🚀 Clean rendering mode: ${totalFrames} frames, ${totalDuration.toFixed(1)}s total`);
-      console.log(`📊 Processing ${this.initialComputeSeconds}s for immediate display`);
-      
-      // Pre-create window
-      const window = this.createHanningWindow(this.fftSize);
-      
-      // Calculate initial processing range (first 5 seconds)
-      const initialFrames = Math.min(totalFrames, Math.floor(this.initialComputeSeconds * framesPerSecond));
-      const spectrogramData = new Array(totalFrames); // Pre-allocate full array
-      
-      console.log(`⚡ CLEAN MODE: Processing ${initialFrames} frames for crisp display`);
-      
-      // Process initial frames with maximum speed
-      const batchSize = 25; // Smaller batches for responsiveness
-      for (let batchStart = 0; batchStart < initialFrames; batchStart += batchSize) {
-        const batchEnd = Math.min(batchStart + batchSize, initialFrames);
-        
-        // Clean progress display without overlays
-        if (batchStart % 200 === 0) {
-          const progress = Math.floor((batchStart / initialFrames) * 100);
-          console.log(`Processing: ${progress}% complete`);
-        }
-        
-        
-        // Process batch with minimal overhead
-        for (let frameIndex = batchStart; frameIndex < batchEnd; frameIndex++) {
-          const startSample = frameIndex * this.hopSize;
-
-          // Extract windowed frame (simplified)
-          const frameData = new Float32Array(this.fftSize);
-          const endSample = Math.min(startSample + this.fftSize, channelData.length);
-          
-          for (let i = 0; i < this.fftSize && startSample + i < channelData.length; i++) {
-            frameData[i] = channelData[startSample + i] * window[i];
-          }
-          
-          // Calculate magnitude spectrum
-          const magnitudes = this.calculateMagnitudeSpectrum(frameData);
-          spectrogramData[frameIndex] = magnitudes;
-        }
-        
-        // No delays for maximum speed
-      }
-
-      console.log(`🚀 CLEAN RENDER READY! ${this.initialComputeSeconds}s computed for display`);      
-      
-      // Store canvas info
-      const spectrogramFramesPerSecond = sampleRate / this.hopSize;
-      this.storeCanvasInfo(canvasId, width, height, totalDuration, spectrogramData, spectrogramFramesPerSecond, frequencyBins, sampleRate, channelData, window, initialFrames);
-      
-      // Single clean render
-      this.renderScrollingView(canvasId, 0);
-      
-    } catch (error) {
-      console.error(`Error generating spectrogram for ${canvasId}:`, error);
-      throw error;
-    }
-  }
-
-  // Ultra-fast streaming computation (minimal overhead)
-  async streamingCompute(canvasId, targetTime) {
-    const info = this.canvasInfo[canvasId];
-    if (!info || !info.channelData) return;
-    
-    const targetFrame = Math.floor(targetTime * info.framesPerSecond);
-    const computeStartFrame = info.computedFrames || 0;
-    
-    // Check if we need to compute more frames (smaller buffer for speed)
-    if (targetFrame <= computeStartFrame + 50) return; // Reduced buffer
-    
-    const computeEndFrame = Math.min(
-      info.spectrogramData.length - 1,
-      targetFrame + Math.floor(this.streamingBatchSeconds * info.framesPerSecond)
-    );
-    
-    if (computeEndFrame <= computeStartFrame) return;
-    
-    // Process in ultra-fast background mode
-    const processFrames = async () => {
-      const batchSize = 10; // Even smaller batches
-      
-      for (let frameIndex = computeStartFrame; frameIndex <= computeEndFrame; frameIndex += batchSize) {
-        const batchEnd = Math.min(frameIndex + batchSize, computeEndFrame);
-        
-        for (let i = frameIndex; i <= batchEnd; i++) {
-          if (i < info.spectrogramData.length && !info.spectrogramData[i]) {
-            const startSample = i * this.hopSize;
-            
-            // Ultra-fast frame extraction
-            const frameData = new Float32Array(this.fftSize);
-            for (let j = 0; j < this.fftSize && startSample + j < info.channelData.length; j++) {
-              frameData[j] = info.channelData[startSample + j] * info.window[j];
-            }
-            
-            // Calculate magnitude spectrum
-            const magnitudes = this.calculateMagnitudeSpectrum(frameData);
-            info.spectrogramData[i] = magnitudes;
-          }
-        }
-        
-        // Minimal delay
-        await new Promise(resolve => setTimeout(resolve, 1));
-      }
-      
-      info.computedFrames = computeEndFrame;
-    };
-    
-    // Run in background without blocking
-    processFrames().catch(console.error);
-  }
-
-  // Store canvas information for streaming spectrogram
-  storeCanvasInfo(canvasId, width, height, duration, spectrogramData, framesPerSecond, frequencyBins, sampleRate, channelData, window, computedFrames) {
-    if (!this.canvasInfo) {
-      this.canvasInfo = {};
-    }
-    this.canvasInfo[canvasId] = {
-      width: width,
-      height: height,
-      duration: duration,
-      spectrogramData: spectrogramData, // Sparse array - only computed portions filled
-      framesPerSecond: framesPerSecond,
-      frequencyBins: frequencyBins,
-      sampleRate: sampleRate,
-      currentScrollTime: 0,
-      // Streaming data
-      channelData: channelData,
-      window: window,
-      computedFrames: computedFrames
-    };
-    this.isStreaming.set(canvasId, false);
-  }
-
-  // Render scrolling view of spectrogram
-  renderScrollingView(canvasId, centerTime) {
-    if (!this.canvasInfo || !this.canvasInfo[canvasId]) return;
-    
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    const info = this.canvasInfo[canvasId];
-    
-    // Calculate scrolling time window
-    const windowDuration = Math.min(this.timeWindowSeconds, info.duration);
-    const startTime = Math.max(0, centerTime - windowDuration / 2);
-    const endTime = Math.min(info.duration, centerTime + windowDuration / 2);
-    
-    // Calculate frame indices for visible window
-    const startFrame = Math.floor(startTime * info.framesPerSecond);
-    const endFrame = Math.min(info.spectrogramData.length - 1, Math.floor(endTime * info.framesPerSecond));
-    const visibleFrames = Math.max(1, endFrame - startFrame + 1);
-    
-    // Clear canvas completely first
-    ctx.clearRect(0, 0, info.width, info.height);
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, info.width, info.height);
-    
-    if (visibleFrames <= 0) return;
-    
-    console.log(`Rendering: ${info.width}x${info.height} canvas, ${visibleFrames} frames, ${info.frequencyBins} freq bins`);
-    
-    // Find dynamic range for this time window (only from computed frames)
-    let minMagnitude = Infinity;
-    let maxMagnitude = -Infinity;
-    
-    for (let frameIdx = startFrame; frameIdx <= endFrame; frameIdx++) {
-      if (frameIdx >= 0 && frameIdx < info.spectrogramData.length && info.spectrogramData[frameIdx]) {
-        const frame = info.spectrogramData[frameIdx];
-        for (const mag of frame) {
-          if (mag > 0) {
-            const db = 20 * Math.log10(Math.max(mag, 1e-10));
-            minMagnitude = Math.min(minMagnitude, db);
-            maxMagnitude = Math.max(maxMagnitude, db);
-          }
-        }
-      }
-    }
-    
-    // Set default range if no data computed yet
-    if (minMagnitude === Infinity) {
-      minMagnitude = -80;
-      maxMagnitude = -10;
-    }
-    
-    // Create single clean imageData render
-    const imageData = ctx.createImageData(info.width, info.height);
-    const data = imageData.data;
-    
-    // Render scrolling window of spectrogram
-    for (let x = 0; x < info.width; x++) {
-      const timeProgress = x / info.width;
-      const currentTime = startTime + timeProgress * (endTime - startTime);
-      const currentFrameIdx = Math.floor(currentTime * info.framesPerSecond);
-      
-      if (currentFrameIdx >= 0 && currentFrameIdx < info.spectrogramData.length && info.spectrogramData[currentFrameIdx]) {
-        const frame = info.spectrogramData[currentFrameIdx];
-        
-        for (let y = 0; y < info.height; y++) {
-          const freqBin = Math.floor(((info.height - 1 - y) / info.height) * info.frequencyBins);
-          if (freqBin < frame.length) {
-            const magnitude = frame[freqBin];
-            const db = magnitude > 0 ? 20 * Math.log10(Math.max(magnitude, 1e-10)) : minMagnitude;
-            
-            const color = this.getAdobeAuditionColor(db);
-            
-            const pixelIndex = (y * info.width + x) * 4;
-            data[pixelIndex] = color[0];
-            data[pixelIndex + 1] = color[1];
-            data[pixelIndex + 2] = color[2];
-            data[pixelIndex + 3] = 255;
-          }
-        }
-      }
-      // Black for uncomputed regions
-    }
-    
-    // Single render to canvas - no overlays to prevent artifacts
-    ctx.putImageData(imageData, 0, 0);
-    
-    // Skip grid and labels to prevent visual artifacts
-    // Clean spectrogram display only
-    
-    // Update stored scroll time
-    info.currentScrollTime = centerTime;
-  }
-
-  // Draw time grid and labels
-  drawTimeGrid(ctx, info, startTime, endTime) {
-    const timeRange = endTime - startTime;
-    const timeStep = timeRange / 10; // 10 time divisions
-    
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    ctx.lineWidth = 1;
-    ctx.font = '10px Arial';
-    ctx.fillStyle = 'white';
-    
-    for (let i = 0; i <= 10; i++) {
-      const time = startTime + i * timeStep;
-      const x = (i / 10) * info.width;
-      
-      // Draw vertical grid line
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, info.height);
-      ctx.stroke();
-      
-      // Draw time label
-      const timeLabel = time.toFixed(1) + 's';
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-      ctx.fillRect(x - 15, info.height - 16, 30, 14);
-      ctx.fillStyle = 'white';
-      ctx.fillText(timeLabel, x - 12, info.height - 6);
-    }
-  }
-
-  // Draw frequency labels
-  drawFrequencyLabels(ctx, info) {
-    const nyquist = info.sampleRate / 2;
-    const freqLabels = [
-      { freq: 100, label: '100Hz' },
-      { freq: 1000, label: '1kHz' },
-      { freq: 2000, label: '2kHz' },
-      { freq: 5000, label: '5kHz' },
-      { freq: 10000, label: '10kHz' },
-      { freq: 16000, label: '16kHz' }
-    ];
-    
-    ctx.font = '10px Arial';
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1;
-    
-    freqLabels.forEach(({ freq, label }) => {
-      if (freq <= nyquist) {
-        const y = info.height - (freq / nyquist) * info.height;
-        if (y > 15 && y < info.height - 5) {
-          // Background for readability
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-          ctx.fillRect(2, y - 8, 35, 12);
-          
-          // Text outline
-          ctx.strokeText(label, 5, y);
-          
-          // Text fill
-          ctx.fillStyle = 'white';
-          ctx.fillText(label, 5, y);
-        }
-      }
-    });
-  }
-
-  // Clean time cursor with minimal overlay
-  drawTimeCursor(canvasId, currentTime) {
-    if (!this.canvasInfo || !this.canvasInfo[canvasId]) return;
-    
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    const info = this.canvasInfo[canvasId];
-    
-    // Re-render spectrogram first
-    this.renderScrollingView(canvasId, currentTime);
-    
-    // Draw simple time cursor line
-    const progress = currentTime / info.duration;
-    const cursorX = progress * info.width;
-    
-    ctx.strokeStyle = '#00ff88';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(cursorX, 0);
-    ctx.lineTo(cursorX, info.height);
-    ctx.stroke();
-  }
-
-  // Setup audio sync for a specific audio element and canvas
-  setupAudioSync(audioId, canvasId) {
-    const audio = document.getElementById(audioId);
-    if (!audio) {
-      console.warn(`Audio element ${audioId} not found for sync`);
-      return;
-    }
-    
-    // Update time cursor during playback
-    const updateCursor = () => {
-      if (!audio.paused) {
-        this.drawTimeCursor(canvasId, audio.currentTime);
-        requestAnimationFrame(updateCursor);
-      }
-    };
-    
-    // Start cursor update when audio plays
-    audio.addEventListener('play', () => {
-      updateCursor();
-    });
-    
-    // Update cursor when seeking
-    audio.addEventListener('timeupdate', () => {
-      if (audio.paused) {
-        this.drawTimeCursor(canvasId, audio.currentTime);
-      }
-    });
-    
-    // Clear cursor when audio ends or pauses
-    audio.addEventListener('pause', () => {
-      this.drawTimeCursor(canvasId, audio.currentTime);
-    });
-    
-    audio.addEventListener('ended', () => {
-      this.drawTimeCursor(canvasId, 0);
-    });
-    
-    console.log(`✅ Audio sync setup for ${audioId} -> ${canvasId}`);
-  }
-
-  // Load and process audio
-  async loadAndGenerateSpectrogram(audioUrl, canvasId) {
-    try {
-      console.log(`🎵 Loading audio for optimized spectrogram: ${audioUrl}`);
-      
-      // Simple loading indication
-      const canvas = document.getElementById(canvasId);
-      if (canvas) {
-        console.log(`🎵 Loading ${canvasId}...`);
-      }
-      
-      const response = await fetch(audioUrl);
-      if (!response.ok) {
-        throw new Error(`Failed to load: ${response.status}`);
-      }
-      
-      const arrayBuffer = await response.arrayBuffer();
-      console.log(`Audio loaded: ${(arrayBuffer.byteLength / 1024).toFixed(0)}KB`);
-      
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-      
-      console.log(`Audio ready: ${audioBuffer.duration.toFixed(1)}s @ ${audioBuffer.sampleRate}Hz`);
-      
-      await this.generateSpectrogram(audioBuffer, canvasId);
-      
-    } catch (error) {
-      console.error(`❌ Error loading ${canvasId}:`, error);
-      
-      const canvas = document.getElementById(canvasId);
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        canvas.width = 800;
-        canvas.height = 256;
-        ctx.fillStyle = '#330000';
-        ctx.fillRect(0, 0, 800, 256);
-        ctx.fillStyle = '#ff6666';
-        ctx.font = '12px Arial';
-        ctx.fillText(`Error: ${error.message}`, 10, 50);
-      }
-    }
-  }
-}
-
-// Simple test visualization - draw immediately
-function drawTestPattern(canvasId, color) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) {
-    console.error(`Canvas ${canvasId} not found!`);
-    return;
-  }
-  
-  console.log(`Drawing test pattern for ${canvasId}`);
-  const ctx = canvas.getContext('2d');
-  
-  // Get the display size
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width || 400;
-  canvas.height = 120;
-  
-  // Draw background
-  ctx.fillStyle = '#1a1a2e';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  // Draw some bars to test
-  ctx.fillStyle = color;
-  for (let i = 0; i < 50; i++) {
-    const x = (i / 50) * canvas.width;
-    const barHeight = Math.random() * canvas.height;
-    ctx.fillRect(x, canvas.height - barHeight, canvas.width / 50 - 2, barHeight);
-  }
-  
-  // Draw text
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '16px Arial';
-  ctx.fillText('Audio Visualization', 10, 30);
-  
-  console.log(`✓ Test pattern drawn for ${canvasId}: ${canvas.width}x${canvas.height}`);
-}
-
-// Initialize spectrograms with audio sync
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('🎵 Initializing spectrograms with audio sync...');
-  
-  const spectrogramGenerator = new SpectrogramGenerator();
-  
-  // Draw test patterns immediately
-  console.log('� Drawing test visualizations...');
-  drawTestPattern('spec-clean', '#00ff88');
-  drawTestPattern('spec-noisy', '#ff9900');
-  
-  setTimeout(() => {
-    console.log('🚀 Starting spectrogram generation with audio sync...');
-    
-    // Generate main spectrograms with audio sync
-    const canvasesToGenerate = [
-      { id: 'spectrogram-clean', url: 'static/clean_10_soul-groove10_102_4-4_bluebird.wav', audio: 'audio-clean' },
-      { id: 'spectrogram-noisy', url: 'static/noisy_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav', audio: 'audio-noisy' }
-    ];
-    
-    // Generate spectrograms with audio synchronization
-    canvasesToGenerate.forEach((item, index) => {
-      const canvas = document.getElementById(item.id);
-      if (canvas) {
-        console.log(`✅ Found canvas: ${item.id}`);
-        setTimeout(() => {
-          spectrogramGenerator.loadAndGenerateSpectrogram(item.url, item.id);
-          
-          // Setup audio sync after generation
-          setTimeout(() => {
-            spectrogramGenerator.setupAudioSync(item.audio, item.id);
-          }, 2000);
-        }, index * 1500); // Staggered generation
-      } else {
-        console.log(`⚠️ Canvas not found: ${item.id}`);
-      }
-    });
-    
-  }, 1000);
-});
-</script>
-
-<script>
-// Function to load CSV data
-async function loadCSV(url) {
-  const response = await fetch(url);
-  const text = await response.text();
-  const lines = text.trim().split('\n');
-  const headers = lines[0].split(',');
-  const data = [];
-  
-  for (let i = 1; i < lines.length; i++) {
-    const values = lines[i].split(',');
-    const row = {};
-    headers.forEach((header, index) => {
-      row[header.trim()] = parseFloat(values[index]) || values[index];
-    });
-    data.push(row);
-  }
-  return data;
-}
 
 // Initialize the chart
 async function initChart() {
@@ -1675,8 +1646,8 @@ async function initChart() {
   try {
     console.log('Loading CSV files...');
     // Load both CSV files
-    const baselineData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_22.csv');
-    const ctcData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_20.csv');
+    const baselineData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_83.csv');
+    const ctcData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_86.csv');
     
     console.log('Baseline data:', baselineData.length, 'points');
     console.log('CTC data:', ctcData.length, 'points');
@@ -1694,13 +1665,14 @@ async function initChart() {
     const ctx = chartElement.getContext('2d');
     console.log('Canvas context:', ctx);
     
+    const STEPS_PER_EPOCH = 1102;
     window.frechetChart = new Chart(ctx, {
       type: 'line',
       data: {
         datasets: [{
           label: 'Baseline Model',
           data: baselineData.map(row => ({
-            x: row.Step,
+            x: row.Step / STEPS_PER_EPOCH,
             y: row.Value
           })),
           borderColor: 'rgb(255, 99, 132)',
@@ -1711,7 +1683,7 @@ async function initChart() {
         }, {
           label: 'Midi Conditioned Model',
           data: ctcData.map(row => ({
-            x: row.Step,
+            x: row.Step / STEPS_PER_EPOCH,
             y: row.Value
           })),
           borderColor: 'rgb(54, 162, 235)',
@@ -1729,7 +1701,14 @@ async function initChart() {
             type: 'linear',
             title: {
               display: true,
-              text: 'Training Steps'
+              text: 'Epoch'
+            },
+            ticks: {
+              callback: (value) => {
+                // Prefer near-integers; otherwise show one decimal
+                const rounded = Math.round(value);
+                return Math.abs(value - rounded) < 0.05 ? String(rounded) : value.toFixed(1);
+              }
             }
           },
           y: {
@@ -1754,7 +1733,8 @@ async function initChart() {
             intersect: false,
             callbacks: {
               label: function(context) {
-                return `${context.dataset.label}: ${context.parsed.y.toFixed(4)} (Step: ${context.parsed.x})`;
+                const epoch = context.parsed.x;
+                return `${context.dataset.label}: ${context.parsed.y.toFixed(4)} (Epoch: ${epoch.toFixed(0)})`;
               }
             }
           }
@@ -1786,6 +1766,72 @@ function toggleLogScale() {
 
 // Initialize chart when page loads
 document.addEventListener('DOMContentLoaded', initChart);
+</script>
+
+<script>
+// Initialize Velocity Ablation bar chart in Impact section
+document.addEventListener('DOMContentLoaded', function() {
+  const canvas = document.getElementById('velocityAblationChart');
+  if (!canvas || !window.Chart) return;
+
+  const labels = ['Baseline', 'MiDiff', 'MiDiff (Random Velocity)', '0', '1', '20', '40', '60', '80', '100', '127'];
+  const baseline =      [0.4797, null,   null,                     null, null,  null,  null,  null,  null,  null,   null];
+  const midiff =        [null,   0.3923, null,                     null, null,  null,  null,  null,  null,  null,   null];
+  const randomVel =     [null,   null,   1.7646,                   null, null,  null,  null,  null,  null,  null,   null];
+  const constantVel =   [null,   null,   null,                     1.8654, 1.7758, 0.7177, 0.5352, 0.4843, 0.4262, 0.4298, 0.4446];
+
+  const ctx = canvas.getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Baseline (No MIDI)', data: baseline, backgroundColor: 'rgba(231, 76, 60, 0.85)' },
+        { label: 'MiDiff', data: midiff, backgroundColor: 'rgba(39, 174, 96, 0.85)' },
+        { label: 'MiDiff (Random Velocity)', data: randomVel, backgroundColor: 'rgba(230, 126, 34, 0.85)' },
+        { label: 'MiDiff (Constant Velocity)', data: constantVel, backgroundColor: 'rgba(52, 152, 219, 0.85)' }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          title: { display: true, text: 'Velocity Configuration' },
+          ticks: { 
+            minRotation: 45, 
+            maxRotation: 45,
+            autoSkip: false,
+            maxTicksLimit: 20,
+            padding: 5
+          },
+          grid: { display: false },
+          offset: true
+        },
+        y: {
+          beginAtZero: true,
+          min: 0,
+          max: 2,
+          title: { display: true, text: 'FAD Score (↓ lower is better)' },
+          grid: { borderDash: [4, 4] }
+        }
+      },
+      plugins: {
+        legend: { position: 'right' },
+        title: { display: true, text: 'Velocity Ablation: FAD Score' },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const v = ctx.parsed.y;
+              if (v == null) return null;
+              return `${ctx.dataset.label}: ${v.toFixed(4)}`;
+            }
+          }
+        }
+      }
+    }
+  });
+});
 </script>
 
 <style>
@@ -1938,6 +1984,202 @@ document.addEventListener('DOMContentLoaded', function() {
         }).catch((err) => console.log('MathJax typesetting failed: ', err));
       }
     }, 2000);
+  }
+});
+
+// Spectrogram Comparison Tool functionality
+const spectrogramData = {
+  midiff: {
+    label: 'MiDiff (Full MIDI)',
+    img: 'static/images/midi_film_conditioned_epoch_50.png',
+    audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_50/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav'
+  },
+  v0: {
+    label: 'Velocity 0',
+    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v0.png',
+    audio: 'static/audio/midi_conditioned/constant_velocity/v=0/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v0.wav'
+  },
+  v1: {
+    label: 'Velocity 1',
+    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v1.png',
+    audio: 'static/audio/midi_conditioned/constant_velocity/v=1/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v1.wav'
+  },
+  v20: {
+    label: 'Velocity 20',
+    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v20.png',
+    audio: 'static/audio/midi_conditioned/constant_velocity/v=20/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v20.wav'
+  },
+  v40: {
+    label: 'Velocity 40',
+    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v40.png',
+    audio: 'static/audio/midi_conditioned/constant_velocity/v=40/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v40.wav'
+  },
+  v60: {
+    label: 'Velocity 60',
+    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v60.png',
+    audio: 'static/audio/midi_conditioned/constant_velocity/v=60/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v60.wav'
+  },
+  v80: {
+    label: 'Velocity 80',
+    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v80.png',
+    audio: 'static/audio/midi_conditioned/constant_velocity/v=80/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v80.wav'
+  },
+  v100: {
+    label: 'Velocity 100',
+    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v100.png',
+    audio: 'static/audio/midi_conditioned/constant_velocity/v=100/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v100.wav'
+  },
+  v127: {
+    label: 'Velocity 127',
+    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v127.png',
+    audio: 'static/audio/midi_conditioned/constant_velocity/v=127/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v127.wav'
+  }
+};
+
+let syncScrollEnabled = true;
+let currentZoom = 1.0;
+const MIN_ZOOM = 1.0;
+const MAX_ZOOM = 4.0;
+
+function zoomSpectrogram(delta) {
+  const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, currentZoom + delta));
+  if (newZoom !== currentZoom) {
+    currentZoom = newZoom;
+    applyZoom();
+  }
+}
+
+function resetZoom() {
+  currentZoom = 1.0;
+  applyZoom();
+}
+
+function applyZoom() {
+  const leftImg = document.getElementById('compare-left-img');
+  const rightImg = document.getElementById('compare-right-img');
+  const zoomLabel = document.getElementById('zoom-level');
+  
+  if (leftImg) {
+    leftImg.style.height = `${136 * currentZoom}px`;
+  }
+  if (rightImg) {
+    rightImg.style.height = `${136 * currentZoom}px`;
+  }
+  if (zoomLabel) {
+    zoomLabel.textContent = `${Math.round(currentZoom * 100)}%`;
+  }
+  
+  // Adjust container height for larger zoom levels
+  const leftContainer = document.getElementById('compare-left-container');
+  const rightContainer = document.getElementById('compare-right-container');
+  const newHeight = Math.min(400, 140 * currentZoom);
+  
+  if (leftContainer) {
+    leftContainer.style.height = `${newHeight}px`;
+  }
+  if (rightContainer) {
+    rightContainer.style.height = `${newHeight}px`;
+  }
+}
+
+function updateComparison(side) {
+  const selectId = `compare-${side}`;
+  const select = document.getElementById(selectId);
+  const value = select.value;
+  const data = spectrogramData[value];
+  
+  if (data) {
+    document.getElementById(`compare-${side}-label`).textContent = data.label;
+    document.getElementById(`compare-${side}-img`).src = data.img;
+    
+    const audio = document.getElementById(`compare-${side}-audio`);
+    const audioSrc = document.getElementById(`compare-${side}-audio-src`);
+    audioSrc.src = data.audio;
+    audio.load();
+  }
+}
+
+function toggleSyncScroll() {
+  syncScrollEnabled = !syncScrollEnabled;
+  const btn = document.getElementById('sync-scroll-btn');
+  if (syncScrollEnabled) {
+    btn.innerHTML = '<i class="fas fa-link"></i> Sync Scrolling: ON';
+    btn.style.background = '#3b82f6';
+  } else {
+    btn.innerHTML = '<i class="fas fa-unlink"></i> Sync Scrolling: OFF';
+    btn.style.background = '#6c757d';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Setup comparison dropdowns
+  const leftSelect = document.getElementById('compare-left');
+  const rightSelect = document.getElementById('compare-right');
+  
+  if (leftSelect) {
+    leftSelect.addEventListener('change', () => updateComparison('left'));
+  }
+  if (rightSelect) {
+    rightSelect.addEventListener('change', () => updateComparison('right'));
+  }
+  
+  // Setup synchronized scrolling for comparison containers
+  const leftContainer = document.getElementById('compare-left-container');
+  const rightContainer = document.getElementById('compare-right-container');
+  
+  if (leftContainer && rightContainer) {
+    let isScrolling = false;
+    
+    leftContainer.addEventListener('scroll', function() {
+      if (syncScrollEnabled && !isScrolling) {
+        isScrolling = true;
+        const scrollRatio = this.scrollLeft / (this.scrollWidth - this.clientWidth);
+        rightContainer.scrollLeft = scrollRatio * (rightContainer.scrollWidth - rightContainer.clientWidth);
+        setTimeout(() => { isScrolling = false; }, 10);
+      }
+    });
+    
+    rightContainer.addEventListener('scroll', function() {
+      if (syncScrollEnabled && !isScrolling) {
+        isScrolling = true;
+        const scrollRatio = this.scrollLeft / (this.scrollWidth - this.clientWidth);
+        leftContainer.scrollLeft = scrollRatio * (leftContainer.scrollWidth - leftContainer.clientWidth);
+        setTimeout(() => { isScrolling = false; }, 10);
+      }
+    });
+    
+    // Mouse wheel zoom with Ctrl key
+    const handleWheelZoom = function(e) {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        zoomSpectrogram(delta);
+      }
+    };
+    
+    leftContainer.addEventListener('wheel', handleWheelZoom, { passive: false });
+    rightContainer.addEventListener('wheel', handleWheelZoom, { passive: false });
+  }
+  
+  // Synchronized scrolling for velocity cards
+  const velocityContainers = document.querySelectorAll('.velocity-scroll-group');
+  if (velocityContainers.length > 0) {
+    let isVelocityScrolling = false;
+    
+    velocityContainers.forEach(container => {
+      container.addEventListener('scroll', function() {
+        if (!isVelocityScrolling) {
+          isVelocityScrolling = true;
+          const scrollRatio = this.scrollLeft / (this.scrollWidth - this.clientWidth);
+          velocityContainers.forEach(other => {
+            if (other !== this) {
+              other.scrollLeft = scrollRatio * (other.scrollWidth - other.clientWidth);
+            }
+          });
+          setTimeout(() => { isVelocityScrolling = false; }, 10);
+        }
+      });
+    });
   }
 });
 </script>
