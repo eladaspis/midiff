@@ -134,6 +134,7 @@
     .footer .content p {
       margin-bottom: 0.5rem;
     }
+
   </style>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -162,8 +163,7 @@
     }
   };
   </script>
-  <!-- MathJax Library -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <!-- MathJax Library (removed polyfill.io - deprecated and caused load issues) -->
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <!-- MIDI parsing library -->
   <script src="https://cdn.jsdelivr.net/npm/midi-parser-js@4.0.4/dist/midi-parser.min.js"></script>
@@ -241,80 +241,155 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            We present MIDI-conditioned diffusion models for drum audio enhancement that leverage symbolic musical information to guide the denoising process. Our method extends SGMSE by incorporating MIDI conditioning through Feature-wise Linear Modulation (FiLM) layers within the NCSNPP U-Net architecture. The MIDI encoder processes piano roll representations to generate conditioning signals that modulate the diffusion model's behavior, enabling musically-informed enhancement decisions. Evaluation on drum audio datasets with (clean, noisy, MIDI) triplets demonstrates improved Frechet VGGish Scores and superior perceptual quality with better preservation of rhythmic structure compared to baseline models.
+            We present MiDiff, a MIDI-conditioned diffusion model for drum audio enhancement that leverages symbolic musical information to guide the denoising process. Our method extends SGMSE by incorporating MIDI conditioning through three complementary strategies: early injection, Feature-wise Linear Modulation (FiLM), and cross-attention within the NCSN++ U-Net architecture. By integrating all three conditioning approaches in a single architecture, MiDiff leverages their complementary strengths to guide the enhancement process. Evaluation on drum audio datasets with (clean, noisy, MIDI) triplets demonstrates improved Fréchet Audio Distance and superior perceptual quality with better preservation of rhythmic structure compared to baseline models.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Architecture Section with Text and Figures -->
+    <!-- MIDI Conditioning Methods Section -->
     <div class="columns is-centered" style="margin-top: 3rem;">
       <div class="column is-four-fifths">
-        <!-- First Row: Text on Left, MIDI Encoder on Right -->
-        <div class="columns is-centered">
-          <div class="column is-6">
-            <div class="content has-text-justified">
-              <h3 class="title is-4">MIDI-Conditioned Architecture</h3>
-              <p>
-                Our approach builds upon SGMSE (Score-based Generative Models for Speech Enhancement) as the baseline framework, extending it with MIDI conditioning for drum audio enhancement. We utilize the MIDI information as a conditioning signal within the NCSNPP (Noise Conditional Score Network++) U-Net architecture, enabling the model to leverage symbolic musical context during the enhancement process.
-              </p>
-              <p>
-                The core architectural modification involves integrating MIDI conditioning into the NCSNPP residual blocks. Specifically, we add an additional FiLM (Feature-wise Linear Modulation) layer to each residual block, enabling the network to dynamically modulate its behavior based on the MIDI input. The MIDI conditioning is processed through a custom encoder that takes MIDI roll representations and transforms them into continuous embeddings \(\mathbf{h}_{\text{MIDI}} \in \mathbb{R}^d\).
-              </p>
-              <p>
-                The MIDI encoder processes piano roll representations of the drum patterns, capturing note onsets and velocities. This encoder architecture consists of convolutional layers followed by temporal processing stages that extract both local rhythmic patterns and global musical structure. The resulting MIDI embeddings are then used to generate FiLM parameters (\(\gamma\) and \(\beta\)) that modulate the U-Net features at multiple scales, allowing the diffusion model to align audio enhancement with the underlying musical intent and drum performance characteristics.
-              </p>
-            </div>
-          </div>
-          <div class="column is-1">
-          </div>
-          <div class="column is-4" style="margin-top: 4rem;">
-            <figure>
-              <img src="static/figures/residual_block.png" alt="MIDI-conditioned residual block incorporating FiLM layers" style="width: 100%;">
-              <figcaption class="" style="text-align: center;">
-                <strong>Figure 1:</strong> MIDI-conditioned residual block incorporating FiLM layers. The MIDI Encoder extracts a latent representation from the raw piano roll input. A Temporal Alignment module then projects these features to match the temporal resolution of the specific U-Net block. Finally, FiLM layers use the aligned MIDI embeddings to modulate the intermediate spectral feature maps via affine transformations.
-              </figcaption>
-            </figure>
-          </div>
-        </div>
-        
-        <!-- Second Row: FiLM Implementation Below -->
-        <div class="columns is-centered" style="margin-top: 3rem;">
-          <div class="column is-6">
-            <div class="content has-text-justified">
-              <h3 class="title is-4">Feature-wise Linear Modulation (FiLM)</h3>
-              <p>
-                FiLM is a powerful conditioning mechanism that modulates the activations of a neural network through feature-wise affine transformations. Given input features \(\mathbf{x}\) and conditioning information (in our case, MIDI embeddings), FiLM applies element-wise scaling and shifting operations:
-              </p>
-              <p style="text-align: center; background: #f8f9fa; border-left: 4px solid #007bff; padding: 1.5rem; margin: 2rem 0; font-size: 1.15rem;">
-                \[\text{FiLM}(\mathbf{x} \mid \gamma, \beta) = \gamma \odot \mathbf{x} + \beta\]
-              </p>
-              <p>
-                where \(\gamma\) and \(\beta\) are learned modulation parameters derived from the MIDI conditioning signal through neural network layers. The scale parameter \(\gamma\) controls the magnitude of features, while the shift parameter \(\beta\) provides an additive bias. This adaptive modulation allows the diffusion model to dynamically adjust its behavior based on the MIDI input.
-              </p>
-              <p>
-                In our architecture, the FiLM parameters are generated from the MIDI encoder output:
-              </p>
-              <p style="text-align: center; background: #f8f9fa; border-left: 4px solid #28a745; padding: 1.5rem; margin: 2rem 0; font-size: 1.15rem;">
-                \[\gamma = f_{\gamma}(\mathbf{h}_{\text{MIDI}}), \quad \beta = f_{\beta}(\mathbf{h}_{\text{MIDI}})\]
-              </p>
-              <p>
-                where \(\mathbf{h}_{\text{MIDI}}\) represents the encoded MIDI features, and \(f_{\gamma}\), \(f_{\beta}\) are learned projection functions. This conditioning mechanism is applied at multiple layers throughout the diffusion U-Net, enabling the network to incorporate MIDI information effectively throughout the denoising process.
-              </p>
-            </div>
-          </div>
-          <div class="column is-2">
-          </div>
+        <h3 class="title is-4">MIDI Conditioning Methods</h3>
+        <div class="content has-text-justified">
+          <p>
+            We investigate three approaches: early injection, FiLM, and cross-attention. Empirical comparisons are in the ablation study.
+          </p>
 
-          <div class="column is-3" style="margin-top: 5rem;">
-            <figure>
-              <img src="static/figures/FiLM_implementation.png" alt="FiLM Implementation" style="width: 100%;">
-              <figcaption>
-                <strong>Figure 2:</strong> Feature-wise Linear Modulation (FiLM) Implementation
-              </figcaption>
-            </figure>
-          </div>
+          <p>
+            <strong>Early Injection.</strong> \([\mathbf{x}_t, \mathbf{y}]\) and MIDI embeddings (from the piano roll via the encoder) are summed before feeding into the U-Net.
+          </p>
+
+          <p>
+            <strong>FiLM.</strong> We employ FiLM layers with scaling/shifting parameters:
+          </p>
+          <p style="text-align: center; background: #f8f9fa; border-left: 4px solid #007bff; padding: 1.5rem; margin: 2rem 0; font-size: 1.15rem;">
+            \[\gamma_{i,c} = f_c(\mathbf{m}_i), \quad \beta_{i,c} = h_c(\mathbf{m}_i), \quad \text{FiLM}(F_{i,c}|\gamma_{i,c}, \beta_{i,c}) = \gamma_{i,c}F_{i,c} + \beta_{i,c}\]
+          </p>
+          <p>
+            A single <em>FiLM generator</em> outputs \((\boldsymbol{\gamma}_{i}, \boldsymbol{\beta}_{i})\) from \(\mathbf{m}_i\). FiLM blocks follow each ResNet block, enabling hierarchical modulation. We retained frame-wise FiLM over Temporal FiLM for lower FAD.
+          </p>
+
+          <p>
+            <strong>Cross-Attention.</strong> Spectral features attend to MIDI embeddings as keys/values. A cross-attention block is inserted before every self-attention layer.
+          </p>
+
+          <p>
+            <strong>MiDiff</strong> integrates all three strategies within a single architecture.
+          </p>
         </div>
+
+        <figure style="margin-top: 2rem;">
+          <div style="width: 100%; overflow-x: auto; background: linear-gradient(180deg, #fafbfc 0%, #f6f8fa 100%); border-radius: 12px; padding: 2rem; border: 1px solid #e1e4e8;">
+            <svg viewBox="0 0 900 320" style="width: 100%; height: auto; min-height: 280px;" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MIDI conditioning methods: Early injection, FiLM, and Cross-attention">
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="#37474f"/>
+                </marker>
+                <linearGradient id="blueFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e3f2fd"/><stop offset="100%" stop-color="#bbdefb"/></linearGradient>
+                <linearGradient id="orangeFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffe0b2"/><stop offset="100%" stop-color="#ffcc80"/></linearGradient>
+                <linearGradient id="cyanFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b2ebf2"/><stop offset="100%" stop-color="#80deea"/></linearGradient>
+                <linearGradient id="purpleFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e1bee7"/><stop offset="100%" stop-color="#ce93d8"/></linearGradient>
+                <linearGradient id="greenFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c8e6c9"/><stop offset="100%" stop-color="#a5d6a7"/></linearGradient>
+                <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.08"/>
+                </filter>
+              </defs>
+              <style>
+                .fig-title { font: 600 14px 'Google Sans', 'Noto Sans', sans-serif; fill: #1a1a2e; }
+                .fig-label { font: 500 13px 'Google Sans', 'Noto Sans', sans-serif; fill: #37474f; }
+                .fig-box { font: 500 11px 'Google Sans', 'Noto Sans', sans-serif; fill: #263238; }
+                .fig-math { font: 600 13px 'Google Sans', 'Noto Sans', sans-serif; fill: #1a1a2e; font-style: italic; }
+              </style>
+              <!-- Column headers -->
+              <text x="150" y="12" class="fig-title" text-anchor="middle">Early Injection</text>
+              <text x="450" y="12" class="fig-title" text-anchor="middle">FiLM</text>
+              <text x="750" y="12" class="fig-title" text-anchor="middle">Cross-Attention</text>
+              <!-- Vertical dividers -->
+              <line x1="300" y1="40" x2="300" y2="300" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="4,4"/>
+              <line x1="600" y1="40" x2="600" y2="300" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="4,4"/>
+              <!-- Panel 1: Early Injection -->
+              <g transform="translate(50, 55)">
+                <text x="47" y="-8" class="fig-math">m</text>
+                <foreignObject x="110" y="-25" width="80" height="28">
+                  <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 13px; color: #1a1a2e; text-align: center;">\([\mathbf{x}_t, \mathbf{y}]\)</div>
+                </foreignObject>
+                <rect x="10" y="35" width="85" height="32" rx="4" fill="url(#orangeFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="52" y="50" class="fig-box" text-anchor="middle">MIDI</text>
+                <text x="52" y="60" class="fig-box" text-anchor="middle">Encoder</text>
+                <circle cx="100" cy="95" r="14" fill="url(#greenFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="100" y="99" class="fig-box" text-anchor="middle" font-size="14">+</text>
+                <rect x="55" y="145" width="90" height="36" rx="4" fill="url(#blueFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="100" y="167" class="fig-box" text-anchor="middle">U-Net</text>
+                <text x="95" y="230" class="fig-math">h</text>
+                <!-- Arrows -->
+                <path d="M 52 0 L 52 35" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <path d="M 52 67 L 52 95 L 86 95" stroke="#37474f" stroke-width="1.5" fill="none" stroke-linejoin="round" marker-end="url(#arrowhead)"/>
+                <path d="M 150 0 L 150 95 L 114 95" stroke="#37474f" stroke-width="1.5" fill="none" stroke-linejoin="round" marker-end="url(#arrowhead)"/>
+                <line x1="100" y1="109" x2="100" y2="145" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <line x1="100" y1="181" x2="100" y2="215" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+              </g>
+              <!-- Panel 2: FiLM -->
+              <g transform="translate(350, 55)">
+                <text x="36" y="-8" class="fig-math">m</text>
+                <text x="165" y="-8" class="fig-math">h</text>
+                <rect x="0" y="25" width="85" height="32" rx="4" fill="url(#orangeFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="42" y="40" class="fig-box" text-anchor="middle">MIDI</text>
+                <text x="42" y="50" class="fig-box" text-anchor="middle">Encoder</text>
+                <rect x="0" y="95" width="85" height="32" rx="4" fill="url(#cyanFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="42" y="110" class="fig-box" text-anchor="middle">Temporal</text>
+                <text x="42" y="120" class="fig-box" text-anchor="middle">Alignment</text>
+                <rect x="120" y="25" width="90" height="32" rx="4" fill="url(#blueFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="165" y="45" class="fig-box" text-anchor="middle">ResBlock</text>
+                <rect x="120" y="95" width="90" height="32" rx="4" fill="url(#purpleFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="165" y="112" class="fig-box" text-anchor="middle">FiLM</text>
+                <text x="162" y="180" class="fig-math">h</text>
+                <!-- MIDI flow (left): m -> Encoder -> Temporal -> FiLM -->
+                <line x1="42" y1="0" x2="42" y2="25" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <line x1="42" y1="57" x2="42" y2="95" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <path d="M 85 111 L 120 111" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+                <!-- Main flow (right): h -> ResBlock -> FiLM -> h -->
+                <line x1="165" y1="0" x2="165" y2="25" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <line x1="165" y1="57" x2="165" y2="95" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <line x1="165" y1="127" x2="165" y2="165" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+              </g>
+              <!-- Panel 3: Cross-Attention -->
+              <g transform="translate(650, 55)">
+                <text x="38" y="-8" class="fig-math">m</text>
+                <text x="162" y="-8" class="fig-math">h</text>
+                <rect x="0" y="25" width="85" height="32" rx="4" fill="url(#orangeFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="42" y="40" class="fig-box" text-anchor="middle">MIDI</text>
+                <text x="42" y="50" class="fig-box" text-anchor="middle">Encoder</text>
+                <rect x="0" y="80" width="85" height="32" rx="4" fill="url(#cyanFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="42" y="95" class="fig-box" text-anchor="middle">Temporal</text>
+                <text x="42" y="105" class="fig-box" text-anchor="middle">Alignment</text>
+                <rect x="120" y="25" width="90" height="32" rx="4" fill="url(#blueFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="165" y="45" class="fig-box" text-anchor="middle">ResBlock</text>
+                <rect x="120" y="80" width="90" height="32" rx="4" fill="url(#orangeFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="165" y="102" class="fig-box" text-anchor="middle">Self-Attn</text>
+                <rect x="120" y="136" width="90" height="32" rx="4" fill="url(#purpleFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="165" y="152" class="fig-box" text-anchor="middle">Cross</text>
+                <text x="165" y="162" class="fig-box" text-anchor="middle">Attention</text>
+                <rect x="120" y="190" width="90" height="32" rx="4" fill="url(#blueFill)" stroke="#37474f" stroke-width="1.2" filter="url(#softShadow)"/>
+                <text x="165" y="207" class="fig-box" text-anchor="middle">ResBlock</text>
+                <text x="160" y="260" class="fig-math">h</text>
+                <!-- MIDI flow (left): m -> Encoder -> Temporal -> Cross-Attention -->
+                <line x1="42" y1="0" x2="42" y2="24" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <line x1="42" y1="57" x2="42" y2="79" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <path d="M 40 112 L 40 152 L 120 152" stroke="#37474f" stroke-width="1.5" fill="none" stroke-linejoin="round" marker-end="url(#arrowhead)"/>
+                <!-- Main flow (right): h -> ResBlock -> Self-Attn -> Cross-Attention -> ResBlock -> h -->
+                <line x1="165" y1="0" x2="165" y2="24" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <line x1="165" y1="57" x2="165" y2="79" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <line x1="165" y1="112" x2="165" y2="135" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <line x1="165" y1="168" x2="165" y2="190" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <line x1="165" y1="222" x2="165" y2="245" stroke="#37474f" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+              </g>
+            </svg>
+          </div>
+          <figcaption class="" style="text-align: center; margin-top: 1rem;">
+            <strong>Figure 1:</strong> MIDI conditioning methods: Early injection, FiLM, and Cross-attention.
+          </figcaption>
+        </figure>
       </div>
     </div>
 
@@ -363,7 +438,7 @@
           <div class="field">
             <div class="control">
               <audio id="audio-clean" controls style="width: 100%; height: 40px;">
-                <source src="static/clean_10_soul-groove10_102_4-4_bluebird.wav" type="audio/wav">
+                <source src="static/audio/dataset/clean/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
             </div>
@@ -395,7 +470,7 @@
           <div class="field">
             <div class="control">
               <audio id="audio-noisy" controls style="width: 100%; height: 40px;">
-                <source src="static/audio/drummer1_1_funk-groove1_138_beat_4-4_bluebird_noisy.wav" type="audio/wav">
+                <source src="static/audio/dataset/noisy/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
             </div>
@@ -434,7 +509,7 @@
             <div class="control">
               <midi-player
                 id="midi-player-main"
-                src="static/10_soul-groove10_102_beat_4-4.mid"
+                src="static/audio/dataset/midi/1_funk-groove1_138_beat_4-4.mid"
                 sound-font
                 visualizer="#midi-visualizer"
                 style="width: 100%; border-radius: 8px; display: block; margin: 0; padding: 0;">
@@ -481,7 +556,7 @@
               try {
                 const response = await fetch('static/10_soul-groove10_102_beat_4-4.mid');
                 const arrayBuffer = await response.arrayBuffer();
-                midiData = await Midi.fromUrl('static/10_soul-groove10_102_beat_4-4.mid');
+                midiData = await Midi.fromUrl('static/audio/dataset/midi/1_funk-groove1_138_beat_4-4.mid');
                 
                 // Extract all notes from all tracks
                 midiData.tracks.forEach(track => {
@@ -790,75 +865,46 @@
         <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 1.5rem; border-radius: 12px; border: 2px solid #dee2e6;">
           <h4 class="title is-5" style="margin-bottom: 1rem; color: #495057;">
             <span class="icon" style="color: #3b82f6;"><i class="fas fa-sliders-h"></i></span>
-            Epoch Comparison Tool
+            Best FAD Comparison Tool
           </h4>
-          <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem;">Select any two model outputs to compare side-by-side. Scrolling is synchronized for easy comparison.</p>
+          <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem;">Compare Baseline vs. MiDiff (voutputs. Select an audio file to compare side-by-side.</p>
           
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
-            <div style="flex: 1; min-width: 200px;">
-              <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block;">Left Spectrogram:</label>
-              <select id="epoch-compare-left" onchange="updateEpochComparison('left')" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem;">
-                <optgroup label="Baseline Model">
-                  <option value="baseline_0">Baseline - Epoch 0</option>
-                  <option value="baseline_10">Baseline - Epoch 10</option>
-                  <option value="baseline_20">Baseline - Epoch 20</option>
-                  <option value="baseline_30" selected>Baseline - Epoch 30</option>
-                  <option value="baseline_40">Baseline - Epoch 40</option>
-                  <option value="baseline_50">Baseline - Epoch 50</option>
-                </optgroup>
-                <optgroup label="MIDI Conditioned Model">
-                  <option value="midi_0">MIDI Cond. - Epoch 0</option>
-                  <option value="midi_10">MIDI Cond. - Epoch 10</option>
-                  <option value="midi_20">MIDI Cond. - Epoch 20</option>
-                  <option value="midi_30">MIDI Cond. - Epoch 30</option>
-                  <option value="midi_40">MIDI Cond. - Epoch 40</option>
-                  <option value="midi_50">MIDI Cond. - Epoch 50</option>
-                </optgroup>
-              </select>
-            </div>
-            <div style="flex: 1; min-width: 200px;">
-              <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block;">Right Spectrogram:</label>
-              <select id="epoch-compare-right" onchange="updateEpochComparison('right')" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem;">
-                <optgroup label="Baseline Model">
-                  <option value="baseline_0">Baseline - Epoch 0</option>
-                  <option value="baseline_10">Baseline - Epoch 10</option>
-                  <option value="baseline_20">Baseline - Epoch 20</option>
-                  <option value="baseline_30">Baseline - Epoch 30</option>
-                  <option value="baseline_40">Baseline - Epoch 40</option>
-                  <option value="baseline_50">Baseline - Epoch 50</option>
-                </optgroup>
-                <optgroup label="MIDI Conditioned Model">
-                  <option value="midi_0">MIDI Cond. - Epoch 0</option>
-                  <option value="midi_10">MIDI Cond. - Epoch 10</option>
-                  <option value="midi_20">MIDI Cond. - Epoch 20</option>
-                  <option value="midi_30" selected>MIDI Cond. - Epoch 30</option>
-                  <option value="midi_40">MIDI Cond. - Epoch 40</option>
-                  <option value="midi_50">MIDI Cond. - Epoch 50</option>
-                </optgroup>
-              </select>
-            </div>
+          <div style="margin-bottom: 1rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block; text-align: left; margin-left: -110px;">Audio file:</label>
+            <select id="epoch-compare-select" onchange="updateEpochComparison()" style="width: 100%; max-width: 500px; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem; margin-left: -110px; display: block;">
+              <option value="drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" selected>drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav</option>
+              <option value="drummer1_2_funk-groove2_105_beat_4-4_brooklyn.wav">drummer1_2_funk-groove2_105_beat_4-4_brooklyn.wav</option>
+              <option value="drummer1_3_soul-groove3_86_beat_4-4_detroit_garage.wav">drummer1_3_soul-groove3_86_beat_4-4_detroit_garage.wav</option>
+              <option value="drummer1_4_soul-groove4_80_beat_4-4_east_bay.wav">drummer1_4_soul-groove4_80_beat_4-4_east_bay.wav</option>
+              <option value="drummer1_5_funk-groove5_84_beat_4-4_heavy.wav">drummer1_5_funk-groove5_84_beat_4-4_heavy.wav</option>
+              <option value="drummer1_6_hiphop-groove6_87_beat_4-4_motown_revisited.wav">drummer1_6_hiphop-groove6_87_beat_4-4_motown_revisited.wav</option>
+              <option value="drummer1_7_pop-groove7_138_beat_4-4_portland.wav">drummer1_7_pop-groove7_138_beat_4-4_portland.wav</option>
+              <option value="drummer1_8_rock-groove8_65_beat_4-4_retro_rock.wav">drummer1_8_rock-groove8_65_beat_4-4_retro_rock.wav</option>
+              <option value="drummer1_9_soul-groove9_105_beat_4-4_roots.wav">drummer1_9_soul-groove9_105_beat_4-4_roots.wav</option>
+              <option value="drummer1_10_soul-groove10_102_beat_4-4_socal.wav">drummer1_10_soul-groove10_102_beat_4-4_socal.wav</option>
+            </select>
           </div>
           
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <!-- Left comparison panel -->
-            <div style="flex: 1; min-width: 300px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-              <div id="epoch-compare-left-label" style="text-align: center; font-weight: 600; margin-bottom: 8px; color: #c92a2a;">Baseline - Epoch 30</div>
-              <div id="epoch-compare-left-container" class="epoch-compare-sync-group" style="border: 2px solid #ff6b6b; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; height: 160px; cursor: grab;">
-                <img id="epoch-compare-left-img" src="static/images/baseline_epoch_30.png" alt="Left Comparison" class="epoch-compare-img" style="height: 156px; width: auto; display: inline-block; max-width: none;">
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+            <!-- Left comparison panel = Baseline -->
+            <div style="width: 350px; max-width: 100%; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+              <div style="font-size: 0.95rem; font-weight: 600; color: #c92a2a; margin-bottom: 8px;">Baseline</div>
+              <div id="epoch-compare-left-container" class="epoch-compare-sync-group" style="border: 2px solid #ff6b6b; border-radius: 8px; overflow-x: auto; overflow-y: hidden; white-space: nowrap; height: 160px; width: 100%; max-width: 340px; cursor: grab;">
+                <img id="epoch-compare-left-img" src="static/images/baseline_v180_drummer1_1_funk-groove1_138_beat_4-4_bluebird.png" alt="Left Comparison" class="epoch-compare-img" style="height: 156px; width: auto; max-width: 340px; display: inline-block;">
               </div>
-              <audio id="epoch-compare-left-audio" controls style="width: 100%; height: 36px; margin-top: 8px;">
-                <source id="epoch-compare-left-audio-src" src="static/audio/baseline/version_83/enhancement/use_midi=False_epoch_30/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
+              <audio id="epoch-compare-left-audio" controls style="width: 100%; max-width: 360px; height: 36px; margin-top: 8px; display: block;">
+                <source id="epoch-compare-left-audio-src" src="static/audio/baseline/version_180_last5/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
               </audio>
             </div>
             
-            <!-- Right comparison panel -->
-            <div style="flex: 1; min-width: 300px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-              <div id="epoch-compare-right-label" style="text-align: center; font-weight: 600; margin-bottom: 8px; color: #1e40af;">MIDI Cond. - Epoch 30</div>
-              <div id="epoch-compare-right-container" class="epoch-compare-sync-group" style="border: 2px solid #3b82f6; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; height: 160px; cursor: grab;">
-                <img id="epoch-compare-right-img" src="static/images/midi_film_conditioned_epoch_30.png" alt="Right Comparison" class="epoch-compare-img" style="height: 156px; width: auto; display: inline-block; max-width: none;">
+            <!-- Right comparison panel = MiDiff -->
+            <div style="width: 350px; max-width: 100%; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+              <div style="font-size: 0.95rem; font-weight: 600; color: #1e40af; margin-bottom: 8px;">MiDiff</div>
+              <div id="epoch-compare-right-container" class="epoch-compare-sync-group" style="border: 2px solid #3b82f6; border-radius: 8px; overflow-x: auto; overflow-y: hidden; white-space: nowrap; height: 160px; width: 100%; max-width: 340px; cursor: grab;">
+                <img id="epoch-compare-right-img" src="static/images/midiff_v181_drummer1_1_funk-groove1_138_beat_4-4_bluebird.png" alt="Right Comparison" class="epoch-compare-img" style="height: 156px; width: auto; max-width: 340px; display: inline-block;">
               </div>
-              <audio id="epoch-compare-right-audio" controls style="width: 100%; height: 36px; margin-top: 8px;">
-                <source id="epoch-compare-right-audio-src" src="static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_30/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
+              <audio id="epoch-compare-right-audio" controls style="width: 100%; max-width: 360px; height: 36px; margin-top: 8px; display: block;">
+                <source id="epoch-compare-right-audio-src" src="static/audio/midi_conditioned/version_181_last5/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
               </audio>
             </div>
           </div>
@@ -871,7 +917,7 @@
             <div style="display: flex; align-items: center; gap: 8px; background: white; padding: 6px 12px; border-radius: 6px; border: 1px solid #ced4da;">
               <span style="font-weight: 600; font-size: 0.85rem; color: #495057;"><i class="fas fa-search"></i> Zoom:</span>
               <button onclick="zoomEpochCompare(-0.25)" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">−</button>
-              <span id="epoch-compare-zoom-level" style="min-width: 50px; text-align: center; font-weight: 600; color: #495057;">100%</span>
+              <span id="epoch-compare-zoom-level" style="min-width: 50px; text-align: center; font-weight: 600; color: #495057;">200%</span>
               <button onclick="zoomEpochCompare(0.25)" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">+</button>
               <button onclick="resetEpochCompareZoom()" style="padding: 4px 10px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Reset</button>
             </div>
@@ -884,115 +930,64 @@
     </div>
 
     <script>
-    // Epoch Comparison Tool Data
-    const epochCompareData = {
-      baseline_0: {
-        label: 'Baseline - Epoch 0',
-        img: 'static/images/baseline_epoch_0.png',
-        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_0/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#c92a2a',
-        borderColor: '#ff6b6b'
-      },
-      baseline_10: {
-        label: 'Baseline - Epoch 10',
-        img: 'static/images/baseline_epoch_10.png',
-        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_10/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#c92a2a',
-        borderColor: '#ff6b6b'
-      },
-      baseline_20: {
-        label: 'Baseline - Epoch 20',
-        img: 'static/images/baseline_epoch_20.png',
-        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_20/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#c92a2a',
-        borderColor: '#ff6b6b'
-      },
-      baseline_30: {
-        label: 'Baseline - Epoch 30',
-        img: 'static/images/baseline_epoch_30.png',
-        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_30/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#c92a2a',
-        borderColor: '#ff6b6b'
-      },
-      baseline_40: {
-        label: 'Baseline - Epoch 40',
-        img: 'static/images/baseline_epoch_40.png',
-        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_40/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#c92a2a',
-        borderColor: '#ff6b6b'
-      },
-      baseline_50: {
-        label: 'Baseline - Epoch 50',
-        img: 'static/images/baseline_epoch_50.png',
-        audio: 'static/audio/baseline/version_83/enhancement/use_midi=False_epoch_50/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#c92a2a',
-        borderColor: '#ff6b6b'
-      },
-      midi_0: {
-        label: 'MIDI Cond. - Epoch 0',
-        img: 'static/images/midi_film_conditioned_epoch_0.png',
-        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_0/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#1e40af',
-        borderColor: '#3b82f6'
-      },
-      midi_10: {
-        label: 'MIDI Cond. - Epoch 10',
-        img: 'static/images/midi_film_conditioned_epoch_10.png',
-        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_10/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#1e40af',
-        borderColor: '#3b82f6'
-      },
-      midi_20: {
-        label: 'MIDI Cond. - Epoch 20',
-        img: 'static/images/midi_film_conditioned_epoch_20.png',
-        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_20/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#1e40af',
-        borderColor: '#3b82f6'
-      },
-      midi_30: {
-        label: 'MIDI Cond. - Epoch 30',
-        img: 'static/images/midi_film_conditioned_epoch_30.png',
-        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_30/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#1e40af',
-        borderColor: '#3b82f6'
-      },
-      midi_40: {
-        label: 'MIDI Cond. - Epoch 40',
-        img: 'static/images/midi_film_conditioned_epoch_40.png',
-        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_40/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#1e40af',
-        borderColor: '#3b82f6'
-      },
-      midi_50: {
-        label: 'MIDI Cond. - Epoch 50',
-        img: 'static/images/midi_film_conditioned_epoch_50.png',
-        audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_50/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
-        color: '#1e40af',
-        borderColor: '#3b82f6'
-      }
-    };
+    // Best FAD Comparison Tool Data - keyed by audio filename
+    // Audio: 5-second clips (last 5s) in version_180_last5/ and version_181_last5/
+    // Spectrogram images: static/images/baseline_v180_{base}.png, static/images/midiff_v181_{base}.png
+    const bestFadFilenames = [
+      'drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav',
+      'drummer1_2_funk-groove2_105_beat_4-4_brooklyn.wav',
+      'drummer1_3_soul-groove3_86_beat_4-4_detroit_garage.wav',
+      'drummer1_4_soul-groove4_80_beat_4-4_east_bay.wav',
+      'drummer1_5_funk-groove5_84_beat_4-4_heavy.wav',
+      'drummer1_6_hiphop-groove6_87_beat_4-4_motown_revisited.wav',
+      'drummer1_7_pop-groove7_138_beat_4-4_portland.wav',
+      'drummer1_8_rock-groove8_65_beat_4-4_retro_rock.wav',
+      'drummer1_9_soul-groove9_105_beat_4-4_roots.wav',
+      'drummer1_10_soul-groove10_102_beat_4-4_socal.wav'
+    ];
+    const bestFadCompareData = {};
+    bestFadFilenames.forEach(f => {
+      const base = f.replace(/\.wav$/, '');
+      bestFadCompareData[f] = {
+        baseline: {
+          img: 'static/images/baseline_v180_' + base + '.png',
+          audio: 'static/audio/baseline/version_180_last5/' + f,
+          color: '#c92a2a',
+          borderColor: '#ff6b6b'
+        },
+        midiff: {
+          img: 'static/images/midiff_v181_' + base + '.png',
+          audio: 'static/audio/midi_conditioned/version_181_last5/' + f,
+          color: '#1e40af',
+          borderColor: '#3b82f6'
+        }
+      };
+    });
 
     let epochCompareSyncEnabled = true;
-    let epochCompareZoomLevel = 1.0;
+    let epochCompareZoomLevel = 2.0;
     const EPOCH_COMPARE_MIN_ZOOM = 1.0;
     const EPOCH_COMPARE_MAX_ZOOM = 4.0;
 
-    function updateEpochComparison(side) {
-      const selectId = `epoch-compare-${side}`;
-      const select = document.getElementById(selectId);
-      const value = select.value;
-      const data = epochCompareData[value];
+    function updateEpochComparison() {
+      const select = document.getElementById('epoch-compare-select');
+      const fileName = select.value;
+      const data = bestFadCompareData[fileName];
       
       if (data) {
-        document.getElementById(`epoch-compare-${side}-label`).textContent = data.label;
-        document.getElementById(`epoch-compare-${side}-label`).style.color = data.color;
-        document.getElementById(`epoch-compare-${side}-img`).src = data.img;
-        document.getElementById(`epoch-compare-${side}-container`).style.borderColor = data.borderColor;
+        // Left panel = Baseline
+        const bl = data.baseline;
+        document.getElementById('epoch-compare-left-img').src = bl.img;
+        document.getElementById('epoch-compare-left-container').style.borderColor = bl.borderColor;
+        document.getElementById('epoch-compare-left-audio-src').src = bl.audio;
+        document.getElementById('epoch-compare-left-audio').load();
         
-        const audio = document.getElementById(`epoch-compare-${side}-audio`);
-        const audioSrc = document.getElementById(`epoch-compare-${side}-audio-src`);
-        audioSrc.src = data.audio;
-        audio.load();
+        // Right panel = MiDiff
+        const md = data.midiff;
+        document.getElementById('epoch-compare-right-img').src = md.img;
+        document.getElementById('epoch-compare-right-container').style.borderColor = md.borderColor;
+        document.getElementById('epoch-compare-right-audio-src').src = md.audio;
+        document.getElementById('epoch-compare-right-audio').load();
       }
     }
 
@@ -1014,15 +1009,17 @@
     }
 
     function resetEpochCompareZoom() {
-      epochCompareZoomLevel = 1.0;
+      epochCompareZoomLevel = 2.0;
       applyEpochCompareZoom();
     }
 
+    const EPOCH_COMPARE_BASE_WIDTH = 350;
     function applyEpochCompareZoom() {
       document.getElementById('epoch-compare-zoom-level').textContent = Math.round(epochCompareZoomLevel * 100) + '%';
       
       document.querySelectorAll('.epoch-compare-img').forEach(img => {
         img.style.height = (156 * epochCompareZoomLevel) + 'px';
+        img.style.maxWidth = (EPOCH_COMPARE_BASE_WIDTH * epochCompareZoomLevel) + 'px';
       });
       
       document.querySelectorAll('.epoch-compare-sync-group').forEach(container => {
@@ -1032,6 +1029,7 @@
 
     // Setup synchronized scrolling for epoch comparison tool
     document.addEventListener('DOMContentLoaded', function() {
+      applyEpochCompareZoom();
       const epochCompareContainers = document.querySelectorAll('.epoch-compare-sync-group');
       let isEpochCompareScrolling = false;
 
@@ -1097,19 +1095,19 @@
       <div class="column is-four-fifths">
         <div class="content has-text-justified" style="margin: 1rem 0 1.5rem 0;">
           
-          <!-- Classifier-Free Guidance Section -->
+          <div style="display: none;"><!-- Classifier-Free Guidance Section (commented out for now)
           <h2 class="title is-3">Classifier-Free Guidance</h2>
           <p>
             Classifier-Free Guidance (CFG) is a technique that controls the strength of conditioning during inference by interpolating between conditional and unconditional predictions. The guidance scale \(w\) determines how strongly the model follows the MIDI Conditioning.
           </p>
           
+          <!-- Interactive CFG Player -->
           <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 2px solid #c084fc;">
             <h5 class="title is-6" style="margin-bottom: 1rem; color: #7c3aed;">
               <span class="icon" style="color: #9333ea;"><i class="fas fa-sliders-h"></i></span>
               Interactive CFG Player
             </h5>
             
-            <!-- Slider Control -->
             <div style="background: white; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
               <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
                 <label style="font-weight: 600; color: #495057; min-width: 120px;">Guidance Scale:</label>
@@ -1335,6 +1333,7 @@
               <span><strong style="color: #9333ea;">●</strong> w=3 (7.5-10s)</span>
             </div>
           </div>
+          </div><!-- end commented: Classifier-Free Guidance section -->
         </div>
       </div>
     </div>
@@ -1359,90 +1358,132 @@
           </figure>
         </div>
 
-        <!-- Spectrogram Comparison Tool -->
-        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; border: 2px solid #dee2e6;">
-          <h5 class="title is-6" style="margin-bottom: 1rem; color: #495057;">
+        <!-- Velocity Sweep: Selection + single spectrogram and player (last 5 seconds) -->
+        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 1.5rem; border-radius: 12px; border: 2px solid #dee2e6; margin-top: 1.5rem;">
+          <h4 class="title is-5" style="margin-bottom: 1rem; color: #495057;">
             <span class="icon" style="color: #3b82f6;"><i class="fas fa-sliders-h"></i></span>
-            Spectrogram Comparison Tool
-          </h5>
-          <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem;">Select two spectrograms to compare side-by-side. Scrolling is synchronized for easy comparison.</p>
+            Velocity Sweep
+          </h4>
+          <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem;">Select a velocity condition to view its spectrogram and listen. Source: drummer1_1_funk-groove1_138_beat_4-4_bluebird (last 5 seconds).</p>
           
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
-            <div style="flex: 1; min-width: 200px;">
-              <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block;">Left Spectrogram:</label>
-              <select id="compare-left" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem;">
-                <option value="midiff">MiDiff (Full MIDI)</option>
-                <option value="v0">Velocity 0</option>
-                <option value="v1">Velocity 1</option>
-                <option value="v20">Velocity 20</option>
-                <option value="v40">Velocity 40</option>
-                <option value="v60">Velocity 60</option>
-                <option value="v80">Velocity 80</option>
-                <option value="v100">Velocity 100</option>
-                <option value="v127" selected>Velocity 127</option>
-              </select>
-            </div>
-            <div style="flex: 1; min-width: 200px;">
-              <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block;">Right Spectrogram:</label>
-              <select id="compare-right" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem;">
-                <option value="midiff" selected>MiDiff (Full MIDI)</option>
-                <option value="v0">Velocity 0</option>
-                <option value="v1">Velocity 1</option>
-                <option value="v20">Velocity 20</option>
-                <option value="v40">Velocity 40</option>
-                <option value="v60">Velocity 60</option>
-                <option value="v80">Velocity 80</option>
-                <option value="v100">Velocity 100</option>
-                <option value="v127">Velocity 127</option>
-              </select>
-            </div>
-          </div>
+          <div style="width: 350px; max-width: 100%; margin-left: auto; margin-right: auto;">
+            <label style="font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.5rem; display: block;">Velocity condition:</label>
+            <select id="velocity-sweep-select" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 0.9rem; margin-bottom: 1rem;">
+              <option value="velocity_0">Velocity 0</option>
+              <option value="velocity_1">Velocity 1</option>
+              <option value="velocity_20">Velocity 20</option>
+              <option value="velocity_40">Velocity 40</option>
+              <option value="velocity_60">Velocity 60</option>
+              <option value="velocity_80">Velocity 80</option>
+              <option value="velocity_100">Velocity 100</option>
+              <option value="velocity_127" selected>Velocity 127</option>
+              <option value="random_velocity">Random Velocity</option>
+            </select>
           
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <!-- Left comparison panel -->
-            <div style="flex: 1; min-width: 300px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-              <div id="compare-left-label" style="text-align: center; font-weight: 600; margin-bottom: 8px; color: #1e40af;">Velocity 127</div>
-              <div id="compare-left-container" class="spectrogram-scroll-container compare-sync-group" style="border: 2px solid #3b82f6; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; height: 140px; cursor: grab;">
-                <img id="compare-left-img" src="static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v127.png" alt="Left Comparison" style="height: 136px; width: auto; display: inline-block; max-width: none;">
+            <div style="background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+              <div id="velocity-sweep-spectrogram-container" class="velocity-sweep-spectrogram-group" style="border: 2px solid #3b82f6; border-radius: 8px; overflow-x: auto; overflow-y: hidden; white-space: nowrap; height: 160px; width: 100%; max-width: 340px; cursor: grab;">
+                <img id="velocity-sweep-img" class="velocity-sweep-spectrogram-img" src="static/images/velocity_sweep_v181_velocity_127.png" alt="Spectrogram" style="height: 156px; width: auto; max-width: 340px; display: inline-block;">
               </div>
-              <audio id="compare-left-audio" controls style="width: 100%; height: 36px; margin-top: 8px;">
-                <source id="compare-left-audio-src" src="static/audio/midi_conditioned/constant_velocity/v=127/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v127.wav" type="audio/wav">
-              </audio>
-            </div>
-            
-            <!-- Right comparison panel -->
-            <div style="flex: 1; min-width: 300px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-              <div id="compare-right-label" style="text-align: center; font-weight: 600; margin-bottom: 8px; color: #27ae60;">MiDiff (Full MIDI)</div>
-              <div id="compare-right-container" class="spectrogram-scroll-container compare-sync-group" style="border: 2px solid #27ae60; border-radius: 8px; overflow-x: scroll; overflow-y: hidden; white-space: nowrap; height: 140px; cursor: grab;">
-                <img id="compare-right-img" src="static/images/midi_film_conditioned_epoch_50.png" alt="Right Comparison" style="height: 136px; width: auto; display: inline-block; max-width: none;">
-              </div>
-              <audio id="compare-right-audio" controls style="width: 100%; height: 36px; margin-top: 8px;">
-                <source id="compare-right-audio-src" src="static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_50/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
+              <audio id="velocity-sweep-audio" controls style="width: 100%; max-width: 360px; height: 36px; margin-top: 8px; display: block;">
+                <source id="velocity-sweep-audio-src" src="static/audio/midi_conditioned/velocity_sweep_v181_last5/velocity_127/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav" type="audio/wav">
               </audio>
             </div>
           </div>
           
           <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; align-items: center;">
-            <button id="sync-scroll-btn" onclick="toggleSyncScroll()" style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">
-              <i class="fas fa-link"></i> Sync Scrolling: ON
-            </button>
-            
             <div style="display: flex; align-items: center; gap: 8px; background: white; padding: 6px 12px; border-radius: 6px; border: 1px solid #ced4da;">
               <span style="font-weight: 600; font-size: 0.85rem; color: #495057;"><i class="fas fa-search"></i> Zoom:</span>
-              <button onclick="zoomSpectrogram(-0.25)" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">−</button>
-              <span id="zoom-level" style="min-width: 50px; text-align: center; font-weight: 600; color: #495057;">100%</span>
-              <button onclick="zoomSpectrogram(0.25)" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">+</button>
-              <button onclick="resetZoom()" style="padding: 4px 10px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Reset</button>
+              <button id="velocity-sweep-zoom-minus" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">−</button>
+              <span id="velocity-sweep-zoom-level" style="min-width: 50px; text-align: center; font-weight: 600; color: #495057;">200%</span>
+              <button id="velocity-sweep-zoom-plus" style="width: 32px; height: 32px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">+</button>
+              <button id="velocity-sweep-zoom-reset" style="padding: 4px 10px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Reset</button>
             </div>
           </div>
           
           <p style="font-size: 0.8rem; color: #6c757d; text-align: center; margin-top: 0.75rem;"><i class="fas fa-info-circle"></i> Tip: Use mouse wheel while holding <kbd style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; border: 1px solid #ced4da;">Ctrl</kbd> to zoom, or scroll horizontally to pan.</p>
         </div>
 
+        <script>
+        (function() {
+          const velocitySweepData = {
+            velocity_0: { label: 'Velocity 0', img: 'static/images/velocity_sweep_v181_velocity_0.png', audio: 'static/audio/midi_conditioned/velocity_sweep_v181_last5/velocity_0/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav' },
+            velocity_1: { label: 'Velocity 1', img: 'static/images/velocity_sweep_v181_velocity_1.png', audio: 'static/audio/midi_conditioned/velocity_sweep_v181_last5/velocity_1/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav' },
+            velocity_20: { label: 'Velocity 20', img: 'static/images/velocity_sweep_v181_velocity_20.png', audio: 'static/audio/midi_conditioned/velocity_sweep_v181_last5/velocity_20/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav' },
+            velocity_40: { label: 'Velocity 40', img: 'static/images/velocity_sweep_v181_velocity_40.png', audio: 'static/audio/midi_conditioned/velocity_sweep_v181_last5/velocity_40/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav' },
+            velocity_60: { label: 'Velocity 60', img: 'static/images/velocity_sweep_v181_velocity_60.png', audio: 'static/audio/midi_conditioned/velocity_sweep_v181_last5/velocity_60/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav' },
+            velocity_80: { label: 'Velocity 80', img: 'static/images/velocity_sweep_v181_velocity_80.png', audio: 'static/audio/midi_conditioned/velocity_sweep_v181_last5/velocity_80/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav' },
+            velocity_100: { label: 'Velocity 100', img: 'static/images/velocity_sweep_v181_velocity_100.png', audio: 'static/audio/midi_conditioned/velocity_sweep_v181_last5/velocity_100/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav' },
+            velocity_127: { label: 'Velocity 127', img: 'static/images/velocity_sweep_v181_velocity_127.png', audio: 'static/audio/midi_conditioned/velocity_sweep_v181_last5/velocity_127/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav' },
+            random_velocity: { label: 'Random Velocity', img: 'static/images/velocity_sweep_v181_random_velocity.png', audio: 'static/audio/midi_conditioned/velocity_sweep_v181_last5/random_velocity/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav' }
+          };
+          let velocitySweepZoomLevel = 2.0;
+          const VELOCITY_SWEEP_MIN_ZOOM = 1.0;
+          const VELOCITY_SWEEP_MAX_ZOOM = 4.0;
+          const VELOCITY_SWEEP_BASE_HEIGHT = 156;
+          const VELOCITY_SWEEP_BASE_WIDTH = 340;
+
+          function updateVelocitySweep() {
+            const select = document.getElementById('velocity-sweep-select');
+            const value = select.value;
+            const data = velocitySweepData[value];
+            if (data) {
+              document.getElementById('velocity-sweep-img').src = data.img;
+              document.getElementById('velocity-sweep-img').alt = data.label;
+              const srcEl = document.getElementById('velocity-sweep-audio-src');
+              srcEl.src = data.audio;
+              document.getElementById('velocity-sweep-audio').load();
+            }
+          }
+
+          function zoomVelocitySweep(delta) {
+            velocitySweepZoomLevel = Math.max(VELOCITY_SWEEP_MIN_ZOOM, Math.min(VELOCITY_SWEEP_MAX_ZOOM, velocitySweepZoomLevel + delta));
+            applyVelocitySweepZoom();
+          }
+
+          function resetVelocitySweepZoom() {
+            velocitySweepZoomLevel = 2.0;
+            applyVelocitySweepZoom();
+          }
+
+          function applyVelocitySweepZoom() {
+            const zoomEl = document.getElementById('velocity-sweep-zoom-level');
+            const img = document.getElementById('velocity-sweep-img');
+            const container = document.getElementById('velocity-sweep-spectrogram-container');
+            if (zoomEl) zoomEl.textContent = Math.round(velocitySweepZoomLevel * 100) + '%';
+            if (img) {
+              img.style.height = (VELOCITY_SWEEP_BASE_HEIGHT * velocitySweepZoomLevel) + 'px';
+              img.style.maxWidth = (VELOCITY_SWEEP_BASE_WIDTH * velocitySweepZoomLevel) + 'px';
+            }
+            if (container) container.style.height = (160 * velocitySweepZoomLevel) + 'px';
+          }
+
+          document.addEventListener('DOMContentLoaded', function() {
+            applyVelocitySweepZoom();
+            const select = document.getElementById('velocity-sweep-select');
+            if (select) select.addEventListener('change', updateVelocitySweep);
+
+            document.getElementById('velocity-sweep-zoom-minus')?.addEventListener('click', () => zoomVelocitySweep(-0.25));
+            document.getElementById('velocity-sweep-zoom-plus')?.addEventListener('click', () => zoomVelocitySweep(0.25));
+            document.getElementById('velocity-sweep-zoom-reset')?.addEventListener('click', resetVelocitySweepZoom);
+
+            const container = document.getElementById('velocity-sweep-spectrogram-container');
+            if (container) {
+              container.addEventListener('wheel', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                  e.preventDefault();
+                  const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                  zoomVelocitySweep(delta);
+                }
+              }, { passive: false });
+            }
+          });
+        })();
+        </script>
+
         <h2 class="title is-3" style="margin-top: 2rem;">Conclusion</h2>
         <div class="content has-text-justified">
           <p>
-            We presented a MIDI-conditioned diffusion model for drum audio enhancement that extends SGMSE with Feature-wise Linear Modulation (FiLM) layers. By incorporating symbolic musical information through a MIDI encoder, our model makes musically-informed enhancement decisions that preserve rhythmic structure and drum timbre. The results demonstrate that the CTC loss-enhanced model achieves consistently lower Frechet VGGish Scores compared to the baseline, with perceptual evaluation confirming superior denoising quality. This work validates the effectiveness of MIDI conditioning for audio enhancement and opens promising directions for extending this approach to other instruments, multi-track scenarios, and real-time applications.
+            We presented MiDiff, a MIDI-conditioned diffusion model for drum audio enhancement that extends SGMSE by integrating three complementary conditioning strategies: early injection, FiLM, and cross-attention. By incorporating symbolic musical information through a MIDI encoder and combining these approaches within a single architecture, our model makes musically-informed enhancement decisions that preserve rhythmic structure and drum timbre. The results demonstrate improved Fréchet Audio Distance compared to baselines, with perceptual evaluation confirming superior denoising quality. This work validates the effectiveness of multi-strategy MIDI conditioning for audio enhancement and opens promising directions for extending this approach to other instruments, multi-track scenarios, and real-time applications.
           </p>
         </div>
       </div>
@@ -1458,7 +1499,7 @@
       author    = {Aspis, Elad and Gannot, Sharon},
       title     = {MiDiff: MIDI-Conditioned Diffusion Models for Drum Audio Enhancement},
       journal   = {TBD},
-      year      = {2025},
+      year      = {2026},
     }</code></pre>
     </div>
 </section>
@@ -1477,13 +1518,6 @@
     <div class="columns is-centered">
       <div class="column is-8">
         <div class="content">
-          <p>
-            <strong>How to Cite:</strong><br>
-            Aspis, E., & Gannot, S. (2025). <em>MiDiff: MIDI-Conditioned Diffusion Models for Drum Audio Enhancement</em>.
-          </p>
-          <p>
-            &copy; 2025 Elad Aspis, Bar-Ilan University. All Rights Reserved.
-          </p>
           <p>
             <strong>Credits:</strong><br>
             For the website we used the source code from the <a href="https://github.com/nerfies/nerfies.github.io" target="_blank">Nerfies</a> website.
@@ -1530,8 +1564,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Reference Audio Waveforms
-  const cleanWave = createSeeWav('waveform-clean', 'static/clean_10_soul-groove10_102_4-4_bluebird.wav');
-  const noisyWave = createSeeWav('waveform-noisy', 'static/noisy_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav');
+  const cleanWave = createSeeWav('waveform-clean', 'static/audio/dataset/clean/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav');
+  const noisyWave = createSeeWav('waveform-noisy', 'static/audio/dataset/noisy/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav');
 
   // Model Outputs Waveforms - 0 Epochs (Initial)
   const baseline0Wave = createSeeWav('waveform-baseline-0', 'static/baseline_model/epoch0_10_soul-groove10_102_4-4_bluebird_v1_noisy.wav');
@@ -1646,8 +1680,8 @@ async function initChart() {
   try {
     console.log('Loading CSV files...');
     // Load both CSV files
-    const baselineData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_83.csv');
-    const ctcData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_86.csv');
+    const baselineData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_180.csv');
+    const ctcData = await loadCSV('static/graphs/frechet_loss/tensorboard_logs_version_181.csv');
     
     console.log('Baseline data:', baselineData.length, 'points');
     console.log('CTC data:', ctcData.length, 'points');
@@ -1672,7 +1706,7 @@ async function initChart() {
         datasets: [{
           label: 'Baseline Model',
           data: baselineData.map(row => ({
-            x: row.Step / STEPS_PER_EPOCH,
+            x: (row.Step / STEPS_PER_EPOCH) - 1,
             y: row.Value
           })),
           borderColor: 'rgb(255, 99, 132)',
@@ -1683,7 +1717,7 @@ async function initChart() {
         }, {
           label: 'Midi Conditioned Model',
           data: ctcData.map(row => ({
-            x: row.Step / STEPS_PER_EPOCH,
+            x: (row.Step / STEPS_PER_EPOCH) - 1,
             y: row.Value
           })),
           borderColor: 'rgb(54, 162, 235)',
@@ -1699,6 +1733,8 @@ async function initChart() {
         scales: {
           x: {
             type: 'linear',
+            min: 0,
+            max: 60,
             title: {
               display: true,
               text: 'Epoch'
@@ -1777,8 +1813,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const labels = ['Baseline', 'MiDiff', 'MiDiff (Random Velocity)', '0', '1', '20', '40', '60', '80', '100', '127'];
   const baseline =      [0.4797, null,   null,                     null, null,  null,  null,  null,  null,  null,   null];
   const midiff =        [null,   0.3923, null,                     null, null,  null,  null,  null,  null,  null,   null];
-  const randomVel =     [null,   null,   1.7646,                   null, null,  null,  null,  null,  null,  null,   null];
-  const constantVel =   [null,   null,   null,                     1.8654, 1.7758, 0.7177, 0.5352, 0.4843, 0.4262, 0.4298, 0.4446];
+  const randomVel =     [null,   null,   14.824064,                null, null,  null,  null,  null,  null,  null,   null];
+  const constantVel =   [null,   null,   null,                     15.052656, 14.930122, 1.45304, 0.628265, 0.62716, 0.607096, 0.631502, 0.628135];
 
   const ctx = canvas.getContext('2d');
   new Chart(ctx, {
@@ -1811,7 +1847,7 @@ document.addEventListener('DOMContentLoaded', function() {
         y: {
           beginAtZero: true,
           min: 0,
-          max: 2,
+          max: 16,
           title: { display: true, text: 'FAD Score (↓ lower is better)' },
           grid: { borderDash: [4, 4] }
         }
@@ -1969,198 +2005,29 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Force MathJax to typeset when page loads
-document.addEventListener('DOMContentLoaded', function() {
-  if (window.MathJax) {
-    MathJax.typesetPromise().then(() => {
-      console.log('MathJax typesetting complete');
-    }).catch((err) => console.log('MathJax typesetting failed: ', err));
-  } else {
-    // Wait for MathJax to load
-    setTimeout(() => {
-      if (window.MathJax) {
-        MathJax.typesetPromise().then(() => {
-          console.log('MathJax typesetting complete (delayed)');
-        }).catch((err) => console.log('MathJax typesetting failed: ', err));
-      }
-    }, 2000);
+// Force MathJax to typeset when page loads and when MathJax becomes ready
+function mathJaxTypeset() {
+  if (window.MathJax && MathJax.typesetPromise) {
+    return MathJax.typesetPromise().catch((err) => console.warn('MathJax typeset:', err));
   }
+  return Promise.resolve();
+}
+document.addEventListener('DOMContentLoaded', function() {
+  mathJaxTypeset();
+  // Retry when MathJax script loads (handles async load race)
+  const mjScript = document.getElementById('MathJax-script');
+  if (mjScript && !mjScript.hasAttribute('data-typeset-done')) {
+    mjScript.addEventListener('load', function() {
+      setTimeout(mathJaxTypeset, 100);
+      mjScript.setAttribute('data-typeset-done', '1');
+    });
+    if (mjScript.readyState === 'complete') setTimeout(mathJaxTypeset, 500);
+  }
+  // Fallback retry for slow connections
+  setTimeout(mathJaxTypeset, 1500);
 });
 
-// Spectrogram Comparison Tool functionality
-const spectrogramData = {
-  midiff: {
-    label: 'MiDiff (Full MIDI)',
-    img: 'static/images/midi_film_conditioned_epoch_50.png',
-    audio: 'static/audio/midi_conditioned/version_86/enhancement/use_midi=True_epoch_50/drummer1_1_funk-groove1_138_beat_4-4_bluebird.wav'
-  },
-  v0: {
-    label: 'Velocity 0',
-    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v0.png',
-    audio: 'static/audio/midi_conditioned/constant_velocity/v=0/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v0.wav'
-  },
-  v1: {
-    label: 'Velocity 1',
-    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v1.png',
-    audio: 'static/audio/midi_conditioned/constant_velocity/v=1/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v1.wav'
-  },
-  v20: {
-    label: 'Velocity 20',
-    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v20.png',
-    audio: 'static/audio/midi_conditioned/constant_velocity/v=20/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v20.wav'
-  },
-  v40: {
-    label: 'Velocity 40',
-    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v40.png',
-    audio: 'static/audio/midi_conditioned/constant_velocity/v=40/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v40.wav'
-  },
-  v60: {
-    label: 'Velocity 60',
-    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v60.png',
-    audio: 'static/audio/midi_conditioned/constant_velocity/v=60/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v60.wav'
-  },
-  v80: {
-    label: 'Velocity 80',
-    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v80.png',
-    audio: 'static/audio/midi_conditioned/constant_velocity/v=80/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v80.wav'
-  },
-  v100: {
-    label: 'Velocity 100',
-    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v100.png',
-    audio: 'static/audio/midi_conditioned/constant_velocity/v=100/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v100.wav'
-  },
-  v127: {
-    label: 'Velocity 127',
-    img: 'static/images/midi_drummer1_1_funk-groove1_138_beat_4-4_bluebird_v127.png',
-    audio: 'static/audio/midi_conditioned/constant_velocity/v=127/drummer1_1_funk-groove1_138_beat_4-4_bluebird_v127.wav'
-  }
-};
-
-let syncScrollEnabled = true;
-let currentZoom = 1.0;
-const MIN_ZOOM = 1.0;
-const MAX_ZOOM = 4.0;
-
-function zoomSpectrogram(delta) {
-  const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, currentZoom + delta));
-  if (newZoom !== currentZoom) {
-    currentZoom = newZoom;
-    applyZoom();
-  }
-}
-
-function resetZoom() {
-  currentZoom = 1.0;
-  applyZoom();
-}
-
-function applyZoom() {
-  const leftImg = document.getElementById('compare-left-img');
-  const rightImg = document.getElementById('compare-right-img');
-  const zoomLabel = document.getElementById('zoom-level');
-  
-  if (leftImg) {
-    leftImg.style.height = `${136 * currentZoom}px`;
-  }
-  if (rightImg) {
-    rightImg.style.height = `${136 * currentZoom}px`;
-  }
-  if (zoomLabel) {
-    zoomLabel.textContent = `${Math.round(currentZoom * 100)}%`;
-  }
-  
-  // Adjust container height for larger zoom levels
-  const leftContainer = document.getElementById('compare-left-container');
-  const rightContainer = document.getElementById('compare-right-container');
-  const newHeight = Math.min(400, 140 * currentZoom);
-  
-  if (leftContainer) {
-    leftContainer.style.height = `${newHeight}px`;
-  }
-  if (rightContainer) {
-    rightContainer.style.height = `${newHeight}px`;
-  }
-}
-
-function updateComparison(side) {
-  const selectId = `compare-${side}`;
-  const select = document.getElementById(selectId);
-  const value = select.value;
-  const data = spectrogramData[value];
-  
-  if (data) {
-    document.getElementById(`compare-${side}-label`).textContent = data.label;
-    document.getElementById(`compare-${side}-img`).src = data.img;
-    
-    const audio = document.getElementById(`compare-${side}-audio`);
-    const audioSrc = document.getElementById(`compare-${side}-audio-src`);
-    audioSrc.src = data.audio;
-    audio.load();
-  }
-}
-
-function toggleSyncScroll() {
-  syncScrollEnabled = !syncScrollEnabled;
-  const btn = document.getElementById('sync-scroll-btn');
-  if (syncScrollEnabled) {
-    btn.innerHTML = '<i class="fas fa-link"></i> Sync Scrolling: ON';
-    btn.style.background = '#3b82f6';
-  } else {
-    btn.innerHTML = '<i class="fas fa-unlink"></i> Sync Scrolling: OFF';
-    btn.style.background = '#6c757d';
-  }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-  // Setup comparison dropdowns
-  const leftSelect = document.getElementById('compare-left');
-  const rightSelect = document.getElementById('compare-right');
-  
-  if (leftSelect) {
-    leftSelect.addEventListener('change', () => updateComparison('left'));
-  }
-  if (rightSelect) {
-    rightSelect.addEventListener('change', () => updateComparison('right'));
-  }
-  
-  // Setup synchronized scrolling for comparison containers
-  const leftContainer = document.getElementById('compare-left-container');
-  const rightContainer = document.getElementById('compare-right-container');
-  
-  if (leftContainer && rightContainer) {
-    let isScrolling = false;
-    
-    leftContainer.addEventListener('scroll', function() {
-      if (syncScrollEnabled && !isScrolling) {
-        isScrolling = true;
-        const scrollRatio = this.scrollLeft / (this.scrollWidth - this.clientWidth);
-        rightContainer.scrollLeft = scrollRatio * (rightContainer.scrollWidth - rightContainer.clientWidth);
-        setTimeout(() => { isScrolling = false; }, 10);
-      }
-    });
-    
-    rightContainer.addEventListener('scroll', function() {
-      if (syncScrollEnabled && !isScrolling) {
-        isScrolling = true;
-        const scrollRatio = this.scrollLeft / (this.scrollWidth - this.clientWidth);
-        leftContainer.scrollLeft = scrollRatio * (leftContainer.scrollWidth - leftContainer.clientWidth);
-        setTimeout(() => { isScrolling = false; }, 10);
-      }
-    });
-    
-    // Mouse wheel zoom with Ctrl key
-    const handleWheelZoom = function(e) {
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
-        const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        zoomSpectrogram(delta);
-      }
-    };
-    
-    leftContainer.addEventListener('wheel', handleWheelZoom, { passive: false });
-    rightContainer.addEventListener('wheel', handleWheelZoom, { passive: false });
-  }
-  
   // Synchronized scrolling for velocity cards
   const velocityContainers = document.querySelectorAll('.velocity-scroll-group');
   if (velocityContainers.length > 0) {
